@@ -1,12 +1,12 @@
 name: Actualizar perfil
 
+# Por ahora solo se lanza a mano (pestaña Actions > Actualizar perfil > Run workflow):
+# GitHub no está ejecutando Actions en esta cuenta por un bloqueo de facturación.
+# Cuando se resuelva, quitar los "#" de las líneas de schedule para que corra cada día.
 on:
-  schedule:
-    - cron: "17 11 * * *"   # todos los días, 6:17 a. m. hora Colombia
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ["scripts/**", "data/**", ".github/workflows/perfil.yml"]
+  # schedule:
+  #   - cron: "17 11 * * *"   # todos los días, 6:17 a. m. hora Colombia
 
 permissions:
   contents: write

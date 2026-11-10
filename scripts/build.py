@@ -227,7 +227,32 @@ def rachas(days):
     return now, best
 
 
+def lenguajes_solo():
+    """Tarjeta compacta para cuando todavía no hay datos de actividad: solo lenguajes (datos reales)."""
+    W, H = 1200, 176
+    defs, bg = frame(W, H, 22, BLUE, .5, 0, dots=False)
+    langs = json.load(open(os.path.join(ROOT, "data", "lenguajes.json"), encoding="utf-8"))["lenguajes"]
+    cols = [TEAL, BLUE, VIOLET, AMBER, "#f472b6", "#34d399", DIM]
+    x0, bw = 40, W - 80
+    body = bg + kicker(40, 50, "LENGUAJES · 5 PROYECTOS RECIENTES", BLUE) + f'<clipPath id="lb"><rect x="{x0}" y="78" width="{bw}" height="16" rx="8"/></clipPath><g clip-path="url(#lb)">'
+    cx = x0
+    for i, ((n, p), c) in enumerate(zip(langs, cols)):
+        w = bw * p / 100
+        body += f'<rect class="seg" style="animation-delay:{i*.12:.2f}s" x="{cx:.1f}" y="78" width="{w+.6:.1f}" height="16" fill="{c}"/>'
+        cx += w
+    body += "</g>"
+    step = bw / len(langs)
+    for i, ((n, p), c) in enumerate(zip(langs, cols)):
+        x = x0 + i * step
+        body += (f'<circle cx="{x+5:.1f}" cy="130" r="5" fill="{c}"/><text x="{x+18:.1f}" y="135" font-family="{SANS}" font-size="15" font-weight="600" fill="{TXT}">{e(n)}</text>'
+                 f'<text x="{x+18:.1f}" y="155" font-family="{MONO}" font-size="13" fill="{MUTED}">{p:.0f} %</text>')
+    style = ".seg{animation:seg 4s ease-in-out infinite}@keyframes seg{50%{opacity:.55}}"
+    save("actividad.svg", svg(W, H, "Lenguajes en 5 proyectos recientes: " + ", ".join(f"{n} {p:.0f} %" for n, p in langs), defs, style, body))
+
+
 def actividad(weeks):
+    if weeks is None:
+        return lenguajes_solo()
     W, H = 1200, 480
     defs, bg = frame(W, H, 22, BLUE, .5, 0, dots=False)
     langs = json.load(open(os.path.join(ROOT, "data", "lenguajes.json"), encoding="utf-8"))["lenguajes"]
@@ -312,6 +337,9 @@ if __name__ == "__main__":
     header(); pilares(); trayectoria(); stack()
     boton("btn-email.svg", "Escríbeme", TEAL); boton("btn-repos.svg", "Ver repositorios", BLUE)
     cal = fetch_calendar()
-    if cal is not None or not os.path.exists(os.path.join(OUT, "actividad.svg")):
+    actual = os.path.join(OUT, "actividad.svg")
+    # Sin datos nuevos no se pisa una tarjeta que ya tiene actividad real.
+    con_datos = os.path.exists(actual) and "CONTRIBUCIONES" in open(actual, encoding="utf-8").read() and "Sincronizando" not in open(actual, encoding="utf-8").read()
+    if cal is not None or not con_datos:
         actividad(cal)
     print("Listo:", sorted(os.listdir(OUT)))
