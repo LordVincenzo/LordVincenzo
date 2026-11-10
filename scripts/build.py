@@ -64,7 +64,7 @@ def chips(items, x, y, maxw, color, size=13, h=26, gap=8):
 def header():
     W, H = 1200, 420
     defs, bg = frame(W, H, 24, TEAL, .8, .45)
-    defs += f'<linearGradient id="name" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{TEAL}"/><stop offset="1" stop-color="{BLUE}"/></linearGradient>'
+    defs += f'<linearGradient id="name" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{TEAL}"/><stop offset=".5" stop-color="#d7fff8"><animate attributeName="offset" values="-.2;1.2;1.2" keyTimes="0;.45;1" dur="5s" repeatCount="indefinite"/></stop><stop offset="1" stop-color="{BLUE}"/></linearGradient>'
     defs += f'<radialGradient id="orb"><stop offset="0" stop-color="{BLUE}" stop-opacity=".16"/><stop offset="1" stop-color="{BLUE}" stop-opacity="0"/></radialGradient>'
     N = [(730, 214, "inicio", TEAL, '<path d="M-6 -9 L9 0 L-6 9 Z"/>'),
          (860, 138, "datos", BLUE, '<ellipse cx="0" cy="-7" rx="10" ry="4"/><path d="M-10 -7 V7 C-10 12 10 12 10 7 V-7"/><path d="M-10 0 C-10 5 10 5 10 0"/>'),
@@ -98,10 +98,11 @@ def header():
              ".n1{animation-delay:.6s}.n2{animation-delay:1.1s}.n3{animation-delay:2s}.n4{animation-delay:2.9s}"
              "@keyframes pop{0%,12%,100%{transform:scale(1)}6%{transform:scale(1.1)}}"
              ".live{animation:live 2.2s ease-in-out infinite}@keyframes live{50%{opacity:.3}}"
-             ".orb{animation:orb 9s ease-in-out infinite alternate}@keyframes orb{to{transform:translate(-60px,24px)}}")
+             ".orb{animation:orb 9s ease-in-out infinite alternate}@keyframes orb{to{transform:translate(-60px,24px)}}"
+             ".tw{opacity:.1;animation:tw 4s ease-in-out infinite}@keyframes tw{50%{opacity:.85}}")
     body = f'''{bg}
 <g clip-path="url(#clip)"><circle class="orb" cx="1010" cy="70" r="230" fill="url(#orb)"/></g>
-<circle cx="46" cy="46" r="6" fill="{TEAL}"/><circle cx="68" cy="46" r="6" fill="{BLUE}" fill-opacity=".8"/><circle cx="90" cy="46" r="6" fill="{VIOLET}" fill-opacity=".7"/>
+<circle class="tw" style="animation-delay:0.0s" cx="310" cy="96" r="1.6" fill="#cfe9ff"/><circle class="tw" style="animation-delay:0.7s" cx="520" cy="70" r="1.2" fill="#cfe9ff"/><circle class="tw" style="animation-delay:1.4s" cx="640" cy="150" r="1.8" fill="#cfe9ff"/><circle class="tw" style="animation-delay:2.1s" cx="585" cy="300" r="1.3" fill="#cfe9ff"/><circle class="tw" style="animation-delay:2.8s" cx="430" cy="345" r="1.5" fill="#cfe9ff"/><circle class="tw" style="animation-delay:3.5s" cx="250" cy="300" r="1.1" fill="#cfe9ff"/><circle class="tw" style="animation-delay:0.2s" cx="668" cy="52" r="1.4" fill="#cfe9ff"/><circle class="tw" style="animation-delay:0.9s" cx="700" cy="330" r="1.6" fill="#cfe9ff"/><circle class="tw" style="animation-delay:1.6s" cx="1160" cy="120" r="1.3" fill="#cfe9ff"/><circle class="tw" style="animation-delay:2.3s" cx="940" cy="340" r="1.5" fill="#cfe9ff"/><circle class="tw" style="animation-delay:3.0s" cx="1080" cy="96" r="1.1" fill="#cfe9ff"/><circle class="tw" style="animation-delay:3.7s" cx="800" cy="70" r="1.6" fill="#cfe9ff"/><circle cx="46" cy="46" r="6" fill="{TEAL}"/><circle cx="68" cy="46" r="6" fill="{BLUE}" fill-opacity=".8"/><circle cx="90" cy="46" r="6" fill="{VIOLET}" fill-opacity=".7"/>
 <text x="118" y="51" font-family="{MONO}" font-size="15" fill="{MUTED}">briand@dev<tspan fill="{DIM}">:</tspan><tspan fill="{BLUE}">~/workspace</tspan> <tspan fill="{DIM}">(main)</tspan></text>
 <g transform="translate(1158,46)"><rect x="-196" y="-18" width="196" height="36" rx="18" fill="{PANEL}" stroke="{LINE}"/>
 <circle class="live" cx="-174" cy="0" r="4.5" fill="{TEAL}"/><text x="-160" y="5" font-family="{SANS}" font-size="14.5" font-weight="600" fill="{TXT}">Soledad, Colombia</text></g>
@@ -197,6 +198,8 @@ def stack():
 
 # ───────────────────────────── actividad ─────────────────────────────
 def fetch_calendar():
+    if os.environ.get("PERFIL_SIN_RED"):
+        return None
     tok = os.environ.get("GH_PAT") or os.environ.get("GITHUB_TOKEN")
     if not tok:
         return None
@@ -213,71 +216,57 @@ def fetch_calendar():
         return None
 
 
-def rachas(days):
+def mejor_racha(days):
     best = cur = 0
     for _, c in days:
         cur = cur + 1 if c else 0
         best = max(best, cur)
-    tail = days[:-1] if days and days[-1][1] == 0 else days   # hoy aún puede no tener actividad
-    now = 0
-    for _, c in reversed(tail):
-        if not c:
-            break
-        now += 1
-    return now, best
+    return best
 
 
-def lenguajes_solo():
-    """Tarjeta compacta para cuando todavía no hay datos de actividad: solo lenguajes (datos reales)."""
-    W, H = 1200, 176
+def semanas_locales(data):
+    """Arma las 53 semanas (domingo a sábado) que terminan en data['hasta'] con los commits guardados."""
+    fin = dt.date.fromisoformat(data["hasta"])
+    ini = fin - dt.timedelta(days=(fin.weekday() + 1) % 7 + 52 * 7)
+    weeks, d = [], ini
+    while d <= fin:
+        w = []
+        for _ in range(7):
+            if d <= fin:
+                w.append((d.isoformat(), data["dias"].get(d.isoformat(), 0)))
+            d += dt.timedelta(days=1)
+        weeks.append(w)
+    return weeks
+
+
+def hora12(h):
+    return f"{(h % 12) or 12} {'a. m.' if h < 12 else 'p. m.'}"
+
+
+def actividad(cal):
+    """Panel de actividad. Con datos de GitHub (cal) usa las contribuciones; si no, los commits de data/actividad.json."""
+    W, H = 1200, 690
     defs, bg = frame(W, H, 22, BLUE, .5, 0, dots=False)
+    data = json.load(open(os.path.join(ROOT, "data", "actividad.json"), encoding="utf-8"))
     langs = json.load(open(os.path.join(ROOT, "data", "lenguajes.json"), encoding="utf-8"))["lenguajes"]
     cols = [TEAL, BLUE, VIOLET, AMBER, "#f472b6", "#34d399", DIM]
-    x0, bw = 40, W - 80
-    body = bg + kicker(40, 50, "LENGUAJES · 5 PROYECTOS RECIENTES", BLUE) + f'<clipPath id="lb"><rect x="{x0}" y="78" width="{bw}" height="16" rx="8"/></clipPath><g clip-path="url(#lb)">'
-    cx = x0
-    for i, ((n, p), c) in enumerate(zip(langs, cols)):
-        w = bw * p / 100
-        body += f'<rect class="seg" style="animation-delay:{i*.12:.2f}s" x="{cx:.1f}" y="78" width="{w+.6:.1f}" height="16" fill="{c}"/>'
-        cx += w
-    body += "</g>"
-    step = bw / len(langs)
-    for i, ((n, p), c) in enumerate(zip(langs, cols)):
-        x = x0 + i * step
-        body += (f'<circle cx="{x+5:.1f}" cy="130" r="5" fill="{c}"/><text x="{x+18:.1f}" y="135" font-family="{SANS}" font-size="15" font-weight="600" fill="{TXT}">{e(n)}</text>'
-                 f'<text x="{x+18:.1f}" y="155" font-family="{MONO}" font-size="13" fill="{MUTED}">{p:.0f} %</text>')
-    style = ".seg{animation:seg 4s ease-in-out infinite}@keyframes seg{50%{opacity:.55}}"
-    save("actividad.svg", svg(W, H, "Lenguajes en 5 proyectos recientes: " + ", ".join(f"{n} {p:.0f} %" for n, p in langs), defs, style, body))
-
-
-def actividad(weeks):
-    if weeks is None:
-        return lenguajes_solo()
-    W, H = 1200, 480
-    defs, bg = frame(W, H, 22, BLUE, .5, 0, dots=False)
-    langs = json.load(open(os.path.join(ROOT, "data", "lenguajes.json"), encoding="utf-8"))["lenguajes"]
-    cols = [TEAL, BLUE, VIOLET, AMBER, "#f472b6", "#34d399", DIM]
-    ok = weeks is not None
-    if ok:
-        days = [d for w in weeks for d in w]
-        total, activos = sum(c for _, c in days), sum(1 for _, c in days if c)
-        now, best = rachas(days)
-        mx = max([c for _, c in days] + [1])
-        vals = [f"{total:,}".replace(",", "."), f"{now}", f"{best}"]
-        subs = ["en el último año", "día seguido" if now == 1 else "días seguidos", "día seguido" if best == 1 else "días seguidos"]
-    else:
-        vals, subs = ["—", "—", "—"], ["en el último año", "días seguidos", "días seguidos"]
+    MES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+    weeks = cal if cal is not None else semanas_locales(data)
+    etiqueta, sub0 = ("CONTRIBUCIONES", "en GitHub, último año") if cal is not None else ("COMMITS", f"en {data['proyectos']} proyectos, último año")
+    days = [d for w in weeks for d in w]
+    total, activos, best = sum(c for _, c in days), sum(1 for _, c in days if c), mejor_racha(days)
     tiles = ""
-    for i, (lab, v, s, c) in enumerate(zip(["CONTRIBUCIONES", "RACHA ACTUAL", "MEJOR RACHA"], vals, subs, [TEAL, AMBER, VIOLET])):
+    for i, (lab, v, s_, c) in enumerate([(etiqueta, f"{total:,}".replace(",", "."), sub0, TEAL),
+                                         ("DÍAS ACTIVOS", str(activos), "con al menos un commit", AMBER),
+                                         ("MEJOR RACHA", str(best), "día seguido" if best == 1 else "días seguidos", VIOLET)]):
         x = 40 + i * 252
         tiles += (f'<rect x="{x}" y="78" width="236" height="140" rx="16" fill="{PANEL}" stroke="{LINE}"/>'
                   f'<text x="{x+20}" y="108" font-family="{MONO}" font-size="12" letter-spacing="2.2" fill="{MUTED}">{lab}</text>'
                   f'<text x="{x+20}" y="170" font-family="{SANS}" font-size="52" font-weight="800" letter-spacing="-1" fill="{c}">{v}</text>'
-                  f'<text x="{x+20}" y="198" font-family="{SANS}" font-size="14" fill="{MUTED}">{s}</text>')
-    # lenguajes: barra apilada + leyenda
+                  f'<text x="{x+20}" y="198" font-family="{SANS}" font-size="14" fill="{MUTED}">{s_}</text>')
     lx, lw = 796, 364
     lang = (f'<rect x="{lx}" y="78" width="{lw}" height="140" rx="16" fill="{PANEL}" stroke="{LINE}"/>'
-            f'<text x="{lx+20}" y="108" font-family="{MONO}" font-size="12" letter-spacing="2.2" fill="{MUTED}">LENGUAJES · 5 PROYECTOS RECIENTES</text>'
+            f'<text x="{lx+20}" y="108" font-family="{MONO}" font-size="12" letter-spacing="2.2" fill="{MUTED}">LENGUAJES · {data["proyectos"]} PROYECTOS RECIENTES</text>'
             f'<clipPath id="lb"><rect x="{lx+20}" y="122" width="{lw-40}" height="12" rx="6"/></clipPath><g clip-path="url(#lb)">')
     cx = lx + 20
     for (n, p), c in zip(langs, cols):
@@ -286,44 +275,74 @@ def actividad(weeks):
         cx += w
     lang += "</g>"
     for i, ((n, p), c) in enumerate(zip(langs, cols)):
-        col, row = i % 2, i // 2
-        x, y = lx + 20 + col * 166, 160 + row * 17.5
+        x, y = lx + 20 + (i % 2) * 166, 160 + (i // 2) * 17.5
         lang += (f'<circle cx="{x+4}" cy="{y-4}" r="4" fill="{c}"/><text x="{x+15}" y="{y}" font-family="{SANS}" font-size="12.5" fill="{TXT}">{e(n)}</text>'
                  f'<text x="{x+146}" y="{y}" text-anchor="end" font-family="{MONO}" font-size="12" fill="{MUTED}">{p:.0f}%</text>')
     # mapa de calor
-    gx, gy, cell, gap = 86, 286, 15, 4.3
-    step = cell + gap
+    gx, gy, cell, step = 86, 286, 15, 19.3
     grid, months, last_m = "", "", None
-    MES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
-    n_w = len(weeks) if ok else 53
-    for wi in range(n_w):
-        col = weeks[wi] if ok else [(None, 0)] * 7
-        if ok and col:
+    OPS = [0, .3, .52, .76, 1]
+    for wi, col in enumerate(weeks):
+        if col:
             m = int(col[0][0][5:7])
-            if m != last_m and wi < n_w - 2:
+            if m != last_m and wi < len(weeks) - 2:
                 months += f'<text x="{gx+wi*step:.1f}" y="{gy-10}" font-family="{MONO}" font-size="11.5" fill="{MUTED}">{MES[m-1]}</text>'
                 last_m = m
-        for di, (date, c) in enumerate(col):
-            if ok:
-                wd = (dt.date.fromisoformat(date).weekday() + 1) % 7      # domingo = 0
-                lvl = 0 if c == 0 else min(4, 1 + int(3 * c / mx + .001)) if mx > 3 else min(4, c)
-                op = [0, .28, .5, .75, 1][lvl]
-                fill = f'fill="{TEAL}" fill-opacity="{op}"' if lvl else 'fill="#18223f"'
-                grid += f'<rect x="{gx+wi*step:.1f}" y="{gy+wd*step:.1f}" width="{cell}" height="{cell}" rx="4" {fill}><title>{date}: {c}</title></rect>'
-            else:
-                grid += f'<rect class="sk" style="animation-delay:{(wi+di)*.045:.2f}s" x="{gx+wi*step:.1f}" y="{gy+di*step:.1f}" width="{cell}" height="{cell}" rx="4" fill="#18223f"/>'
+        for date, c in col:
+            wd = (dt.date.fromisoformat(date).weekday() + 1) % 7
+            lvl = 0 if c == 0 else 1 if c < 2 else 2 if c < 5 else 3 if c < 10 else 4
+            fill = f'fill="{TEAL}" fill-opacity="{OPS[lvl]}"' if lvl else 'fill="#18223f"'
+            cls = f' class="hot" style="animation-delay:{(wi % 9) * .22:.2f}s"' if lvl >= 3 else ""
+            grid += f'<rect{cls} x="{gx+wi*step:.1f}" y="{gy+wd*step:.1f}" width="{cell}" height="{cell}" rx="4" {fill}><title>{date}: {c}</title></rect>'
     dias = "".join(f'<text x="40" y="{gy+i*step+12:.1f}" font-family="{MONO}" font-size="11.5" fill="{MUTED}">{d}</text>' for i, d in ((1, "lun"), (3, "mié"), (5, "vie")))
     fy = gy + 7 * step + 22
-    if ok:
-        pie = (f'<text x="40" y="{fy}" font-family="{SANS}" font-size="13.5" fill="{MUTED}">{activos} días con actividad · se actualiza sola cada día</text>'
-               f'<text x="{W-170}" y="{fy}" text-anchor="end" font-family="{MONO}" font-size="11.5" fill="{MUTED}">menos</text>'
-               + "".join(f'<rect x="{W-160+i*19}" y="{fy-12}" width="15" height="15" rx="4" ' + (f'fill="{TEAL}" fill-opacity="{o}"' if o else 'fill="#18223f"') + '/>' for i, o in enumerate([0, .28, .5, .75, 1]))
-               + f'<text x="{W-58}" y="{fy}" font-family="{MONO}" font-size="11.5" fill="{MUTED}">más</text>')
-    else:
-        pie = f'<circle class="sk" cx="46" cy="{fy-5}" r="4.5" fill="{TEAL}"/><text x="60" y="{fy}" font-family="{SANS}" font-size="13.5" fill="{MUTED}">Sincronizando la actividad con GitHub…</text>'
-    style = ".sk{animation:sk 2.4s ease-in-out infinite}@keyframes sk{50%{fill:#2a3c70}}"
-    body = f'{bg}{kicker(40, 50, "ACTIVIDAD EN GITHUB", BLUE)}{tiles}{lang}{months}{dias}{grid}{pie}'
-    save("actividad.svg", svg(W, H, "Actividad en GitHub: contribuciones, rachas, lenguajes y mapa de calor del último año", defs, style, body))
+    hasta = dt.date.fromisoformat(data["hasta"])
+    nota = "se actualiza sola cada día" if cal is not None else f"datos al {hasta.day} {MES[hasta.month-1]} {hasta.year}"
+    pie = (f'<text x="40" y="{fy:.0f}" font-family="{SANS}" font-size="13.5" fill="{MUTED}">Último año · {nota}</text>'
+           f'<text x="{W-170}" y="{fy:.0f}" text-anchor="end" font-family="{MONO}" font-size="11.5" fill="{MUTED}">menos</text>'
+           + "".join(f'<rect x="{W-160+i*19}" y="{fy-12:.0f}" width="15" height="15" rx="4" ' + (f'fill="{TEAL}" fill-opacity="{o}"' if o else 'fill="#18223f"') + '/>' for i, o in enumerate(OPS))
+           + f'<text x="{W-58}" y="{fy:.0f}" font-family="{MONO}" font-size="11.5" fill="{MUTED}">más</text>')
+    # cuándo programo: por hora y por día de la semana
+    ty, base, hmax = 490, 640, 86
+    horas, sem = data["horas"], data["semana"]
+    pico, mh = horas.index(max(horas)), max(horas + [1])
+    hb = f'<line x1="40" x2="{W-40}" y1="{ty-28}" y2="{ty-28}" stroke="{LINE}" stroke-opacity=".6"/>' + kicker(40, ty, "CUÁNDO PROGRAMO", AMBER)
+    for h, v in enumerate(horas):
+        x, bh = 44 + h * 29.5, max(3, hmax * v / mh)
+        c = AMBER if h == pico else BLUE
+        hb += f'<rect class="up" style="animation-delay:{h*.14:.2f}s" x="{x:.1f}" y="{base-bh:.1f}" width="20" height="{bh:.1f}" rx="5" fill="{c}" fill-opacity="{1 if h == pico else .55}"/>'
+        if h % 6 == 0 or h == 23:
+            hb += f'<text x="{x+10:.1f}" y="{base+20}" text-anchor="middle" font-family="{MONO}" font-size="11.5" fill="{MUTED}">{hora12(h)}</text>'
+    px = 44 + pico * 29.5 + 10
+    hb += f'<text x="{px:.1f}" y="{base - hmax - 10}" text-anchor="middle" font-family="{SANS}" font-size="13" font-weight="700" fill="{AMBER}">pico: {hora12(pico)}</text>'
+    ms, orden = max(sem + [1]), sorted(range(7), key=lambda i: -sem[i])[:2]
+    for i, v in enumerate(sem):
+        x, bh = 836 + i * 46, max(3, hmax * v / ms)
+        top = i in orden
+        hb += (f'<rect class="up" style="animation-delay:{i*.14:.2f}s" x="{x}" y="{base-bh:.1f}" width="30" height="{bh:.1f}" rx="6" fill="{TEAL if top else VIOLET}" fill-opacity="{1 if top else .5}"/>'
+               f'<text x="{x+15}" y="{base+20}" text-anchor="middle" font-family="{MONO}" font-size="12" fill="{TXT if top else MUTED}">{"LMXJVSD"[i]}</text>')
+    finde = round(100 * (sem[5] + sem[6]) / max(1, sum(sem)))
+    hb += f'<text x="{W-40}" y="{ty}" text-anchor="end" font-family="{SANS}" font-size="13.5" fill="{MUTED}">{finde} % de los commits, en fin de semana</text>'
+    style = (".hot{animation:hot 3.6s ease-in-out infinite}@keyframes hot{50%{fill-opacity:.45}}"
+             ".up{animation:up 3.4s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom}@keyframes up{50%{transform:scaleY(.8)}}")
+    body = f'{bg}{kicker(40, 50, "ACTIVIDAD", BLUE)}{tiles}{lang}{months}{dias}{grid}{pie}{hb}'
+    save("actividad.svg", svg(W, H, f"Actividad: {total} {etiqueta.lower()} y {activos} días activos en el último año, mejor racha de {best} días; pico de actividad a las {hora12(pico)}.", defs, style, body))
+
+
+def cierre():
+    W, H = 1200, 170
+    defs, bg = frame(W, H, 22, TEAL, .9, .5)
+    defs += f'<linearGradient id="cta" x1="0" x2="1"><stop offset="0" stop-color="{TEAL}"/><stop offset="1" stop-color="{BLUE}"/></linearGradient>'
+    ola = "M0 150 " + " ".join(f"Q{60+i*120} {132 if i % 2 == 0 else 168} {120+i*120} 150" for i in range(10))
+    style = (f".ola{{fill:none;stroke:{TEAL};stroke-opacity:.35;stroke-width:1.6;stroke-dasharray:6 10;animation:ola 2.2s linear infinite}}@keyframes ola{{to{{stroke-dashoffset:-32}}}}"
+             ".fl{animation:fl 1.6s ease-in-out infinite}@keyframes fl{50%{transform:translateX(6px)}}")
+    body = f'''{bg}<g clip-path="url(#clip)"><path class="ola" d="{ola}"/></g>
+<text x="46" y="78" font-family="{SANS}" font-size="38" font-weight="800" letter-spacing="-.8" fill="{TXT}">¿Automatizamos algo <tspan fill="url(#cta)">juntos</tspan>?</text>
+<text x="46" y="112" font-family="{SANS}" font-size="18" fill="{MUTED}">Cuéntame qué tarea repetitiva te quita tiempo y vemos cómo resolverla.</text>
+<rect x="{W-266}" y="56" width="220" height="56" rx="28" fill="url(#cta)"/>
+<text x="{W-170}" y="91" text-anchor="middle" font-family="{SANS}" font-size="19" font-weight="700" fill="{BG0}">Escríbeme</text>
+<path class="fl" d="M{W-104} 84 h22 m-8 -8 l8 8 l-8 8" fill="none" stroke="{BG0}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>'''
+    save("cierre.svg", svg(W, H, "¿Automatizamos algo juntos? Escríbeme.", defs, style, body))
 
 
 def boton(fn, text, color):
@@ -336,10 +355,6 @@ def boton(fn, text, color):
 if __name__ == "__main__":
     header(); pilares(); trayectoria(); stack()
     boton("btn-email.svg", "Escríbeme", TEAL); boton("btn-repos.svg", "Ver repositorios", BLUE)
-    cal = fetch_calendar()
-    actual = os.path.join(OUT, "actividad.svg")
-    # Sin datos nuevos no se pisa una tarjeta que ya tiene actividad real.
-    con_datos = os.path.exists(actual) and "CONTRIBUCIONES" in open(actual, encoding="utf-8").read() and "Sincronizando" not in open(actual, encoding="utf-8").read()
-    if cal is not None or not con_datos:
-        actividad(cal)
+    cierre()
+    actividad(fetch_calendar())
     print("Listo:", sorted(os.listdir(OUT)))

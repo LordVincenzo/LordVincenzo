@@ -30,8 +30,6 @@ Me interesan la **IA que corre en local**, las **apps en tiempo real** y los **f
 
 <img src="assets/stack.svg" width="100%" alt="Stack: TypeScript, JavaScript, C#, PHP, SQL, React, Next.js, Tailwind CSS, Ionic, Capacitor, Node.js, .NET 8, PostgreSQL, MySQL, MongoDB, Supabase, Firebase, n8n, Power Automate, Power BI, Ollama, Whisper, Git, Docker, Unity, VS Code, SAP.">
 
-<img src="assets/actividad.svg" width="100%" alt="Lenguajes en mis proyectos recientes y actividad en GitHub.">
+<img src="assets/actividad.svg" width="100%" alt="Actividad del último año: commits, días activos, mejor racha, lenguajes, mapa de calor y a qué horas programo.">
 
-<p align="center">
-<sub>Gracias por pasar · <a href="mailto:Briandcastro11b@gmail.com">hablemos</a></sub>
-</p>
+<a href="mailto:Briandcastro11b@gmail.com"><img src="assets/cierre.svg" width="100%" alt="¿Automatizamos algo juntos? Escríbeme."></a>
