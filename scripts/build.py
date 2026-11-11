@@ -32,7 +32,8 @@ def ancho_pct(nombre, base, en_fila):
 CORREO = "Briandcastro11b@gmail.com"
 CV = "https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf"
 e = html.escape
-REDUCE = "@media (prefers-reduced-motion:reduce){*{animation:none!important}}"
+REDUCE = (".viaje{animation:viaje 9s linear infinite}@keyframes viaje{to{stroke-dashoffset:-1000}}"
+          "@media (prefers-reduced-motion:reduce){*{animation:none!important}}")
 
 TEMAS = {
     # ACENTO: lo que se resalta (blanco sobre negro, negro sobre claro). MEDIO: el gris de los bloques de color.
@@ -121,16 +122,36 @@ def save(name, W, H, label, body, style="", defs=""):
                 f'<g transform="translate({izq:g},0)">{body}</g></svg>')
 
 
+def esquinas(W, H, color, op=.55, d=14, l=12):
+    """Marcas en las cuatro esquinas, como las de un visor."""
+    p = "".join(f"M{x} {y+sy*l} V{y} H{x+sx*l} " for x, y, sx, sy in ((d, d, 1, 1), (W - d, d, -1, 1), (d, H - d, 1, -1), (W - d, H - d, -1, -1)))
+    return f'<path d="{p}" fill="none" stroke="{color}" stroke-opacity="{op}" stroke-width="1.6" stroke-linecap="round"/>'
+
+
 def fondo(W, H, tono="base", malla=False):
-    """base: bloque del tema · medio: gris · inverso: blanco en tema oscuro y negro en tema claro."""
+    """Tarjeta. base: la del tema · medio: gris · inverso: blanca en tema oscuro y negra en tema claro.
+
+    Lleva degradado, un brillo en la esquina, borde que se apaga hacia abajo, marcas en las esquinas
+    y un destello que recorre el borde.
+    """
+    oscuro = TEMA == "oscuro"
     if tono == "medio":
-        return f'<rect width="{W}" height="{H}" rx="16" fill="{MEDIO}"/>'
-    if tono == "inverso":
-        return f'<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="15" fill="{FG}"/>'
-    m = (f'<pattern id="malla" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M30 0 H0 V30" fill="none" stroke="{FG}" stroke-opacity=".06"/></pattern>'
-         f'<rect width="{W}" height="{H}" fill="url(#malla)"/>') if malla else ""
-    return (f'<g clip-path="url(#clip)"><rect width="{W}" height="{H}" fill="{BG}"/>{m}</g>'
-            f'<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="15" fill="none" stroke="{LINEA}" stroke-width="1.5"/>')
+        c0, c1, tinta, luz = "#7d7d7d", "#585858", BLANCO, .22
+    elif tono == "inverso":
+        c0, c1, tinta, luz = ("#ffffff", "#dcdcdc", NEGRO, .0) if oscuro else ("#1c1c1c", "#060606", BLANCO, .1)
+    else:
+        c0, c1, tinta, luz = ("#171717", "#090909", BLANCO, .075) if oscuro else ("#ffffff", "#ececec", NEGRO, .0)
+    defs = (f'<defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{c0}"/><stop offset="1" stop-color="{c1}"/></linearGradient>'
+            f'<radialGradient id="tl" cx="0" cy="0" r="1"><stop offset="0" stop-color="#fff" stop-opacity="{luz}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'
+            f'<linearGradient id="tb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{tinta}" stop-opacity=".5"/><stop offset=".5" stop-color="{tinta}" stop-opacity=".14"/><stop offset="1" stop-color="{tinta}" stop-opacity=".06"/></linearGradient>'
+            f'<pattern id="malla" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.1" fill="{tinta}" fill-opacity=".16"/></pattern>'
+            f'<linearGradient id="tf" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+            f'<mask id="tm"><rect width="{W}" height="{H}" fill="url(#tf)"/></mask></defs>')
+    m = f'<rect width="{W}" height="{H}" fill="url(#malla)" mask="url(#tm)"/>' if (malla or tono == "base") else ""
+    return (f'{defs}<g clip-path="url(#clip)"><rect width="{W}" height="{H}" fill="url(#tg)"/>{m}<rect width="{W}" height="{H}" fill="url(#tl)"/></g>'
+            f'<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="15" fill="none" stroke="url(#tb)" stroke-width="1.5"/>'
+            f'<rect class="viaje" x="1" y="1" width="{W-2}" height="{H-2}" rx="15" fill="none" stroke="{tinta}" stroke-opacity=".9" stroke-width="1.6" stroke-linecap="round" pathLength="1000" stroke-dasharray="46 954"/>'
+            f'{esquinas(W, H, tinta)}')
 
 
 def rotulo(x, y, text, color=None, punto=None):
@@ -269,10 +290,9 @@ def galaxia(data):
         polvo += f'<circle cx="{rad*math.cos(ang):.1f}" cy="{rad*math.sin(ang):.1f}" r="{r.choice([.5, .7, .9])}" fill="{FG}" fill-opacity="{r.uniform(.06, .26):.2f}"/>'
     defs = (f'<radialGradient id="halo"><stop offset="0" stop-color="{FG}" stop-opacity=".5"/><stop offset=".4" stop-color="{FG}" stop-opacity=".12"/><stop offset="1" stop-color="{FG}" stop-opacity="0"/></radialGradient>'
             '<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>')
-    body = (f'<g clip-path="url(#clip)"><rect width="{W}" height="{H}" fill="{BG}"/>'
+    body = (f'{fondo(W, H)}<g clip-path="url(#clip)">'
             f'<g transform="translate(476 170) rotate(-14) scale(1.08 .52)"><circle r="320" fill="url(#halo)" opacity=".3"/><g class="gal">{polvo}{soles}</g>'
             f'<circle r="84" fill="url(#halo)"/><circle r="20" fill="{FG}" filter="url(#blur)"/><circle r="10" fill="{FG}"/></g></g>'
-            f'<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="15" fill="none" stroke="{LINEA}" stroke-width="1.5"/>'
             f'{rotulo(36, 50, T["gal"])}<text x="36" y="{H-30}" font-family="{SANS}" font-size="13.5" fill="{GRIS}">{e(T["gal_n"])}</text>')
     save("galaxia.svg", W, H, f"{T['gal'].title()}: {T['gal_n']}", body,
          ".gal{animation:gal 150s linear infinite}@keyframes gal{to{transform:rotate(360deg)}}.tw{animation:tw 3.2s ease-in-out infinite}@keyframes tw{50%{opacity:.25}}", defs)
