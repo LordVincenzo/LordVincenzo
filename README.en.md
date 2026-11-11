@@ -2,7 +2,7 @@
 
 <p align="center"><img src="assets/banner-en.gif" width="100%" alt="Briand Castro, software analyst and developer. Animation of a black hole surrounded by falling code."></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/yo.svg"><img src="assets/oscuro/en/yo.svg" width="100%" alt="About me: technologist in Software Analysis and Development. I build web and mobile apps and automate repetitive work. Today I manage the Prizma platform at Corporación Universitaria Americana and work on Priz (institutional artificial intelligence) and Control Tower (process automation and management). Soledad, Colombia."></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/yo.svg"><img src="assets/oscuro/en/yo.svg" width="100%" alt="About me: technologist in Software Analysis and Development. I build web and mobile apps and automate repetitive work. Today I manage the Prizma platform at Corporación Universitaria Americana and work on institutional artificial intelligence and on process automation and management. Soledad, Colombia."></picture></p>
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/stack.svg"><img src="assets/oscuro/en/stack.svg" width="100%" alt="Stack: C#, TypeScript, JavaScript, PHP, Python, SQL; React, Next.js, Tailwind, Ionic, Capacitor; .NET, Node.js, PostgreSQL, MySQL, MongoDB, Supabase, Firebase, Power BI; n8n, Power Automate, Ollama; Git, Docker, Unity, VS Code, SAP."></picture></p>
 
