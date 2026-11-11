@@ -75,7 +75,7 @@ def rot(x, y, t, n=None):
 def icono(slug, x, y, s, fill=None):
     fill = fill or FG
     if slug in IC: return f'<path transform="translate({x} {y}) scale({s/24})" fill="{fill}" d="{IC[slug]["p"]}"/>'
-    return f'<rect x="{x}" y="{y}" width="{s}" height="{s}" rx="{s*.2}" fill="none" stroke="{fill}" stroke-width="1.6"/><text x="{x+s/2}" y="{y+s*.66}" text-anchor="middle" font-family="{SANS}" font-weight="800" font-size="{s*.42}" fill="{fill}">{slug}</text>'
+    return f'<rect x="{x}" y="{y}" width="{s}" height="{s}" rx="{s*.2}" fill="none" stroke="{fill}" stroke-width="1.6"/><text x="{x+s/2}" y="{y+s*.66}" text-anchor="middle" font-family="{SANS}" font-weight="700" font-size="{s*.42}" fill="{fill}">{slug}</text>'
 
 # ---------------- 1. sobre mí + escena ----------------
 def escena(ox, oy):
@@ -138,7 +138,7 @@ def yo():
     hoy = T["hoy"]
     for i, (n, et, d) in enumerate(hoy):
         s.append(f'<circle cx="54" cy="{y-6}" r="4" fill="{FG}"><animate attributeName="opacity" values="1;.25;1" dur="2.4s" begin="{-i*.6}s" repeatCount="indefinite"/></circle>'
-                 f'<text x="70" y="{y}" font-family="{SANS}" font-size="16.5" font-weight="800" fill="{FG}">{n}</text>'
+                 f'<text x="70" y="{y}" font-family="{SANS}" font-size="16.5" font-weight="700" fill="{FG}">{n}</text>'
                  f'<rect x="{590-len(et)*8.4-18:.0f}" y="{y-16}" width="{len(et)*8.4+18:.0f}" height="21" rx="6" fill="none" stroke="{TE}"/><text x="{590-(len(et)*8.4+18)/2:.0f}" y="{y-1}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{GR}" letter-spacing="1">{et}</text>'
                  "".join(f'<text x="70" y="{y+23+j*21}" font-family="{SANS}" font-size="15" fill="{GR}">{esc(l)}</text>' for j, l in enumerate(d))); y += 42 + 21 * len(d)
     s.append(f'<g font-family="{MONO}" font-size="12.5"><rect x="640" y="{H-64}" width="176" height="30" rx="15" fill="none" stroke="{TE}"/><circle cx="656" cy="{H-49}" r="4" fill="{FG}"><animate attributeName="opacity" values="1;.2;1" dur="1.6s" repeatCount="indefinite"/></circle><text x="668" y="{H-44.5}" fill="{FG}">Soledad, Colombia</text></g>')
@@ -268,7 +268,7 @@ def ruta():
         s.append(f'<rect x="{x}" y="{y}" width="{cw}" height="{ch}" rx="16" fill="{bg}" stroke="{"none" if hoy else "{BORDE}"}" stroke-width="1.5"/>')
         s.append(f'<text x="{x+22}" y="{y+34}" font-family="{MONO}" font-size="12" fill="{sub}" letter-spacing="2.5">{f}</text>'
                  f'<text x="{x+cw-22}" y="{y+36}" text-anchor="end" font-family="{DISP}" font-weight="900" font-size="22" fill="{fg}" opacity="{.9 if hoy else .25}">0{i+1}</text>'
-                 f'<text x="{x+22}" y="{y+72}" font-family="{SANS}" font-weight="800" font-size="20" fill="{fg}">{a}</text><text x="{x+22}" y="{y+95}" font-family="{SANS}" font-size="13.5" fill="{sub}">{b}</text>'
+                 f'<text x="{x+22}" y="{y+72}" font-family="{SANS}" font-weight="700" font-size="20" fill="{fg}">{a}</text><text x="{x+22}" y="{y+95}" font-family="{SANS}" font-size="13.5" fill="{sub}">{b}</text>'
                  f'<text font-family="{SANS}" font-size="13.5" fill="{sub}"><tspan x="{x+22}" y="{y+126}">{d[0]}</tspan><tspan x="{x+22}" y="{y+145}">{d[1]}</tspan></text>')
         if hoy: s.append(f'<circle cx="{x+cw-30}" cy="{y+ch-28}" r="5" fill="{BG}"/><circle cx="{x+cw-30}" cy="{y+ch-28}" r="5" fill="none" stroke="{BG}" stroke-width="1.5"><animate attributeName="r" values="5;15" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="1.8s" repeatCount="indefinite"/></circle>')
     s.append(fin(H)); guardar("trayectoria.svg", "".join(s))
