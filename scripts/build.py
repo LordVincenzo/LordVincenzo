@@ -312,9 +312,11 @@ def boton(fn, txt, lleno):
 
 def readme(idioma):
     T = TEXTOS[idioma]; A = T["alt"]
-    pic = lambda f, attr, alt: f'<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/{idioma}/{f}"><img src="assets/oscuro/{idioma}/{f}" {attr} alt="{esc(alt)}"></picture>'
+    import hashlib
+    ver = lambda p: p + "?v=" + hashlib.md5(open(os.path.join(ROOT, p), "rb").read()).hexdigest()[:8]      # cambia con el contenido: evita que se vea la versión en caché
+    pic = lambda f, attr, alt: f'<picture><source media="(prefers-color-scheme: light)" srcset="{ver(f"assets/claro/{idioma}/{f}")}"><img src="{ver(f"assets/oscuro/{idioma}/{f}")}" {attr} alt="{esc(alt)}"></picture>'
     L = [f'<p align="right"><a href="{T["otro"]}">{pic("b-idioma.svg", 'height="30"', A["idioma"])}</a></p>', "",
-         f'<p align="center"><img src="assets/portada-{idioma}.gif" width="100%" alt="{esc(A["banner"])}"></p>', ""]
+         f'<p align="center"><img src="{ver(f"assets/portada-{idioma}.gif")}" width="100%" alt="{esc(A["banner"])}"></p>', ""]
     for f, k in (("yo", "yo"), ("stack", "stack"), ("actividad", "actividad"), ("trayectoria", "ruta"), ("contacto", "cierre")): L += [f'<p align="center">{pic(f + ".svg", 'width="100%"', A[k])}</p>', ""]
     L += [f'<p align="center"><a href="https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf">{pic("b-cv.svg", 'height="44"', A["cv"])}</a>&nbsp;&nbsp;&nbsp;'
           f'<a href="mailto:Briandcastro11b@gmail.com">{pic("b-mail.svg", 'height="44"', A["mail"])}</a></p>', ""]
