@@ -14,7 +14,7 @@ TEXTOS = {
  "es": dict(sobre="SOBRE MÍ", t1="CONSTRUYO Y", t2="AUTOMATIZO.",
     par=[[("Tecnólogo en ", 0), ("Análisis y Desarrollo de Software", 1), (". Construyo", 0)], [("apps web y móviles de punta a punta y pongo al sistema a", 0)], [("hacer el trabajo repetitivo.", 0)], None,
          [("Hoy gestiono la plataforma educativa ", 0), ("Prizma", 1), (" en la", 0)], [("Corporación ", 0), ("Universitaria Americana", 1), (".", 0)]],
-    hoy_t="EN LO QUE ANDO HOY", hoy_x=236, hoy=[("Inteligencia artificial a la medida", "IA", ["Creo asistentes de IA personalizados: clonación de voz,", "reconocimiento con Whisper y el modelo corriendo en servidor."]), ("Lógica, datos y automatización", "AUTO", ["Manejo de la información a nivel de lógica y datos, y", "automatizaciones internas: carpetas y matrices enlazadas."])],
+    hoy_t="EN LO QUE ANDO HOY", hoy_x=236, hoy=[("Inteligencia artificial a la medida", "IA", ["Sé armar una inteligencia artificial personalizada de punta a punta:", "clonación de voz para que hable con voz propia, Whisper para que", "entienda lo que le dicen y el cerebro (el modelo de lenguaje)", "corriendo en un servidor propio."]), ("Lógica, datos y automatización", "AUTO", ["Manejo toda la información a nivel de lógica y datos, y construyo", "automatizaciones internas: creación de carpetas y matrices que se", "vinculan entre sí, para que los procesos corran solos y sin", "trabajo manual."])],
     vivo="EN VIVO · MODO CONCENTRACIÓN", stack="STACK · ASÍ FLUYE UN PROYECTO", grupos=["LENGUAJES", "FRONTEND Y MÓVIL", "BACKEND Y DATOS", "AUTOMATIZACIÓN E IA", "HERRAMIENTAS"],
     act="ACTIVIDAD", c_en="commits en 5 proyectos", st=["días activos", "mejor racha", "en fin de semana"], sem="COMMITS POR SEMANA", pico="{n} en una semana", dia="DÍA A DÍA",
     meses=["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"], hora="HORA DEL DÍA", h10="10 a. m.", dsem="DÍA DE LA SEMANA", letras="LMXJVSD",
@@ -32,7 +32,7 @@ TEXTOS = {
  "en": dict(sobre="ABOUT ME", t1="I BUILD AND", t2="AUTOMATE.",
     par=[[("Technologist in ", 0), ("Software Analysis and Development", 1), (". I build", 0)], [("web and mobile apps end to end and make the system", 0)], [("do the repetitive work.", 0)], None,
          [("Today I manage the ", 0), ("Prizma", 1), (" learning platform at", 0)], [("Corporación ", 0), ("Universitaria Americana", 1), (".", 0)]],
-    hoy_t="WHAT I'M ON TODAY", hoy_x=226, hoy=[("Custom artificial intelligence", "AI", ["I build custom AI assistants: voice cloning, speech", "recognition with Whisper and the model running on a server."]), ("Logic, data and automation", "AUTO", ["Handling information at the logic and data level, plus", "internal automations: linked folders and matrices."])],
+    hoy_t="WHAT I'M ON TODAY", hoy_x=226, hoy=[("Custom artificial intelligence", "AI", ["I know how to put together a custom AI end to end: voice cloning", "so it speaks with its own voice, Whisper so it understands what", "it hears, and the brain (the language model) running on a", "dedicated server."]), ("Logic, data and automation", "AUTO", ["I handle all the information at the logic and data level and build", "internal automations: creating folders and matrices that link to", "each other, so processes run on their own with no manual work."])],
     vivo="LIVE · FOCUS MODE", stack="STACK · HOW A PROJECT FLOWS", grupos=["LANGUAGES", "FRONTEND & MOBILE", "BACKEND & DATA", "AUTOMATION & AI", "TOOLS"],
     act="ACTIVITY", c_en="commits across 5 projects", st=["active days", "best streak", "on weekends"], sem="COMMITS PER WEEK", pico="{n} in one week", dia="DAY BY DAY",
     meses=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], hora="HOUR OF DAY", h10="10 a.m.", dsem="DAY OF WEEK", letras="MTWTFSS",
@@ -125,7 +125,7 @@ def escena(ox, oy):
     s.append('</g>'); return "".join(s)
 
 def yo():
-    H = 604; s = [base(H, 11, .6, "a")]
+    H = 708; s = [base(H, 11, .6, "a")]
     s.append(rot(48, 62, T["sobre"]))
     s.append(f'<text font-family="{DISP}" font-weight="900" font-size="40" fill="{FG}"><tspan x="46" y="122">{T["t1"]}</tspan><tspan x="46" y="166">{T["t2"]}</tspan></text>')
     par = T["par"]
@@ -140,10 +140,10 @@ def yo():
         s.append(f'<circle cx="54" cy="{y-6}" r="4" fill="{FG}"><animate attributeName="opacity" values="1;.25;1" dur="2.4s" begin="{-i*.6}s" repeatCount="indefinite"/></circle>'
                  f'<text x="70" y="{y}" font-family="{SANS}" font-size="16.5" font-weight="800" fill="{FG}">{n}</text>'
                  f'<rect x="{590-len(et)*8.4-18:.0f}" y="{y-16}" width="{len(et)*8.4+18:.0f}" height="21" rx="6" fill="none" stroke="{TE}"/><text x="{590-(len(et)*8.4+18)/2:.0f}" y="{y-1}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{GR}" letter-spacing="1">{et}</text>'
-                 "".join(f'<text x="70" y="{y+21+j*19}" font-family="{SANS}" font-size="13.5" fill="{GR}">{esc(l)}</text>' for j, l in enumerate(d))); y += 74
+                 "".join(f'<text x="70" y="{y+23+j*21}" font-family="{SANS}" font-size="15" fill="{GR}">{esc(l)}</text>' for j, l in enumerate(d))); y += 42 + 21 * len(d)
     s.append(f'<g font-family="{MONO}" font-size="12.5"><rect x="640" y="{H-64}" width="176" height="30" rx="15" fill="none" stroke="{TE}"/><circle cx="656" cy="{H-49}" r="4" fill="{FG}"><animate attributeName="opacity" values="1;.2;1" dur="1.6s" repeatCount="indefinite"/></circle><text x="668" y="{H-44.5}" fill="{FG}">Soledad, Colombia</text></g>')
     import pixel
-    sx, sy = 640, 112
+    sx, sy = 640, 162
     s.append(f'<defs><clipPath id="pxc"><rect x="{sx}" y="{sy}" width="528" height="360" rx="14"/></clipPath></defs><g clip-path="url(#pxc)"><g transform="translate({sx} {sy})">{pixel.svg(3)}</g></g>'
              f'<rect x="{sx}" y="{sy}" width="528" height="360" rx="14" fill="none" stroke="{BORDE}" stroke-width="1.5"/>')
     s.append(f'<text x="{sx+528}" y="{sy+386}" text-anchor="end" font-family="{MONO}" font-size="11.5" fill="{TE}" letter-spacing="2">{T["vivo"]}</text><circle cx="{sx+528-len(T["vivo"])*8.95-16:.0f}" cy="{sy+382}" r="3.5" fill="{FG}"><animate attributeName="opacity" values="1;.15;1" dur="1.4s" repeatCount="indefinite"/></circle>')
