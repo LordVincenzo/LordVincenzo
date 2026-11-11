@@ -1,17 +1,21 @@
+<p align="right"><a href="README.en.md"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/idioma.svg"><img src="assets/oscuro/es/idioma.svg" height="30" alt="Read in English"></picture></a></p>
+
 <p>
-<img src="assets/nombre.svg" width="66.4%" alt="Briand Castro — Analista y Desarrollador de Software">
-<img src="assets/flujo.svg" width="32.9%" alt="Flujo de automatización animado. Soledad, Colombia.">
-<img src="assets/consola.gif" width="32.9%" alt="Animación de una terminal ejecutando un flujo de automatización paso a paso">
-<img src="assets/sobre.svg" width="66.4%" alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo aplicaciones web y móviles de punta a punta y automatizo procesos. Gestiono la plataforma educativa Prizma en la Corporación Universitaria Americana, donde automaticé el cargue de cursos con n8n. Me interesan la IA que corre en local, las apps en tiempo real y los flujos de automatización.">
-<img src="assets/cifra-commits.svg" width="32.9%" alt="165 commits en 5 proyectos durante el último año">
-<img src="assets/cifra-dias.svg" width="32.9%" alt="27 días activos">
-<img src="assets/cifra-racha.svg" width="32.9%" alt="Mejor racha: 4 días seguidos">
-<img src="assets/hago.svg" width="100%" alt="Qué hago. Desarrollo: web y móvil de punta a punta. Automatización: flujos con n8n y Power Automate. Datos: reportes y tableros en Power BI.">
-<img src="assets/stack.svg" width="66.4%" alt="Stack: TypeScript, JavaScript, C#, PHP, SQL, React, Next.js, Tailwind CSS, Ionic, Capacitor, Node.js, .NET 8, PostgreSQL, MySQL, MongoDB, Supabase, Firebase, n8n, Power Automate, Power BI, Ollama, Whisper, Git, Docker, Unity, VS Code, SAP.">
-<img src="assets/ruta.svg" width="32.9%" alt="Trayectoria: Gestor de Plataforma Prizma en la Corporación Universitaria Americana (desde septiembre de 2025), Calidad de Proveedores en Procaps (2025), Tecnólogo ADSO en el SENA (2023–2025).">
-<img src="assets/calor.svg" width="66.4%" alt="Mapa de actividad del último año: commits en 5 proyectos.">
-<img src="assets/reloj.svg" width="32.9%" alt="Reloj de 24 horas con mis commits por hora: el pico es a las 10 a. m.">
-<img src="assets/lenguajes.svg" width="100%" alt="Lenguajes en 5 proyectos recientes: C# 45 %, TypeScript 23 %, SQL 11 %, HTML 9 %, Python 6 %, JavaScript 4 %, otros 3 %.">
-<img src="assets/semana.svg" width="32.9%" alt="Commits por día de la semana: 51 % en fin de semana.">
-<a href="mailto:Briandcastro11b@gmail.com"><img src="assets/cierre.svg" width="66.4%" alt="¿Automatizamos algo juntos? Escríbeme."></a>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/nombre.svg"><img src="assets/oscuro/es/nombre.svg" width="66.4%" alt="Briand Castro — Analista Y Desarrollador De Software"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/robot.svg"><img src="assets/oscuro/es/robot.svg" width="32.9%" alt="Robot en pixel art programando en un portátil. Soledad, Colombia."></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/consola.gif"><img src="assets/oscuro/es/consola.gif" width="32.9%" alt="Animación de una terminal ejecutando un flujo de automatización paso a paso"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/sobre.svg"><img src="assets/oscuro/es/sobre.svg" width="66.4%" alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo aplicaciones web y móviles de punta a punta y automatizo procesos. Gestiono la plataforma educativa Prizma en la Corporación Universitaria Americana, donde automaticé el cargue de cursos con n8n. Me interesan la IA que corre en local, las apps en tiempo real y los flujos de automatización."></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-commits.svg"><img src="assets/oscuro/es/cifra-commits.svg" width="32.9%" alt="COMMITS: 165. en 5 proyectos, último año"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-dias.svg"><img src="assets/oscuro/es/cifra-dias.svg" width="32.9%" alt="DÍAS ACTIVOS: 27. con al menos un commit"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-racha.svg"><img src="assets/oscuro/es/cifra-racha.svg" width="32.9%" alt="MEJOR RACHA: 4. días seguidos"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/hago.svg"><img src="assets/oscuro/es/hago.svg" width="100%" alt="Web y móvil de punta a punta. Interfaces, APIs y bases de datos: de la idea a la app funcionando. Que lo repetitivo lo haga el sistema. Flujos con n8n y Power Automate que ahorran horas de trabajo manual. Datos que se entienden. Reportes y tableros en Power BI sobre bases SQL y NoSQL."></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/stack.svg"><img src="assets/oscuro/es/stack.svg" width="66.4%" alt="Stack: LENGUAJES: TypeScript, JavaScript, C#, PHP, SQL; FRONTEND Y MÓVIL: React, Next.js, Tailwind CSS, Ionic, Capacitor; BACKEND Y DATOS: Node.js, .NET 8, PostgreSQL, MySQL, MongoDB, Supabase, Firebase; AUTOMATIZACIÓN E IA: n8n, Power Automate, Power BI, Ollama, Whisper; HERRAMIENTAS: Git, Docker, Unity, VS Code, SAP"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/ruta.svg"><img src="assets/oscuro/es/ruta.svg" width="32.9%" alt="Trayectoria: Gestor de Plataforma Prizma, Corporación Universitaria Americana (SEP 2025 — HOY); Calidad de Proveedores, Procaps (ENE — JUL 2025); Tecnólogo ADSO, SENA (2023 — 2025)"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/ciudad.svg"><img src="assets/oscuro/es/ciudad.svg" width="100%" alt="Ciudad De Commits: Cada edificio es un día; la altura, sus commits. 165 commits."></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/calor.svg"><img src="assets/oscuro/es/calor.svg" width="66.4%" alt="ACTIVIDAD · ÚLTIMO AÑO: commits en 5 proyectos · datos al 10 nov 2026."></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/reloj.svg"><img src="assets/oscuro/es/reloj.svg" width="32.9%" alt="Hora Pico: 10 a. m.."></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/lenguajes.svg"><img src="assets/oscuro/es/lenguajes.svg" width="66.4%" alt="Lenguajes · 5 Proyectos Recientes: C# 45%, TypeScript 23%, SQL 11%, HTML 9%, Python 6%, JavaScript 4%, Otros 3%"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/semana.svg"><img src="assets/oscuro/es/semana.svg" width="32.9%" alt="Semana: 51 % en fin de semana."></picture>
+<a href="https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cv.svg"><img src="assets/oscuro/es/cv.svg" width="32.9%" alt="Hoja De Vida: Descargar PDF"></picture></a>
+<a href="mailto:Briandcastro11b@gmail.com"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cierre.svg"><img src="assets/oscuro/es/cierre.svg" width="66.4%" alt="¿AUTOMATIZAMOS ALGO JUNTOS? Escríbeme."></picture></a>
 </p>
