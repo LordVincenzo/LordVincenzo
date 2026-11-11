@@ -1,21 +1,13 @@
-<p align="right"><a href="README.md"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/idioma.svg"><img src="assets/oscuro/en/idioma.svg" height="30" alt="Leer en español"></picture></a></p>
+<img src="assets/banner-en.gif" width="100%" alt="Briand Castro, software analyst and developer. Soledad, Colombia. Animation of a black hole with its spinning disk of light.">
 
-<p>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/nombre.svg"><img src="assets/oscuro/en/nombre.svg" width="66.4%" alt="Briand Castro — Software Analyst &amp; Developer"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/flujo.svg"><img src="assets/oscuro/en/flujo.svg" width="32.9%" alt="Animated automation workflow. Soledad, Colombia."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/consola.gif"><img src="assets/oscuro/en/consola.gif" width="32.9%" alt="Animated terminal running an automation workflow step by step"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/sobre.svg"><img src="assets/oscuro/en/sobre.svg" width="66.4%" alt="About me: technologist in Software Analysis and Development. I build web and mobile apps end to end and automate processes. I manage the Prizma learning platform at Corporación Universitaria Americana, where I automated course loading with n8n. I&#x27;m into AI that runs locally, real-time apps and automation workflows."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/cifra-commits.svg"><img src="assets/oscuro/en/cifra-commits.svg" width="32.9%" alt="COMMITS: 165. in 5 projects, past year"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/cifra-dias.svg"><img src="assets/oscuro/en/cifra-dias.svg" width="32.9%" alt="ACTIVE DAYS: 27. with at least one commit"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/cifra-racha.svg"><img src="assets/oscuro/en/cifra-racha.svg" width="32.9%" alt="BEST STREAK: 4. days in a row"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/hago.svg"><img src="assets/oscuro/en/hago.svg" width="100%" alt="Web and mobile, end to end. Interfaces, APIs and databases: from the idea to a working app. Let the system do the repetitive. n8n and Power Automate workflows that save hours of manual work. Data people understand. Power BI reports and dashboards on SQL and NoSQL databases."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/stack.svg"><img src="assets/oscuro/en/stack.svg" width="66.4%" alt="Stack: LANGUAGES: TypeScript, JavaScript, C#, PHP, SQL; FRONTEND &amp; MOBILE: React, Next.js, Tailwind CSS, Ionic, Capacitor; BACKEND &amp; DATA: Node.js, .NET 8, PostgreSQL, MySQL, MongoDB, Supabase, Firebase; AUTOMATION &amp; AI: n8n, Power Automate, Power BI, Ollama, Whisper; TOOLS: Git, Docker, Unity, VS Code, SAP"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/ruta.svg"><img src="assets/oscuro/en/ruta.svg" width="32.9%" alt="Journey: Prizma Platform Manager, Corporación Universitaria Americana (SEP 2025 — NOW); Supplier Quality, Procaps (JAN — JUL 2025); ADSO Technologist, SENA (2023 — 2025)"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/ciudad.svg"><img src="assets/oscuro/en/ciudad.svg" width="100%" alt="Commit City: Each building is a day; its height, the commits. 165 commits."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/calor.svg"><img src="assets/oscuro/en/calor.svg" width="66.4%" alt="ACTIVITY · PAST YEAR: commits in 5 projects · data as of 10 Nov 2026."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/reloj.svg"><img src="assets/oscuro/en/reloj.svg" width="32.9%" alt="Peak Hour: 10 AM."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/lenguajes.svg"><img src="assets/oscuro/en/lenguajes.svg" width="66.4%" alt="Languages · 5 Recent Projects: C# 45%, TypeScript 23%, SQL 11%, HTML 9%, Python 6%, JavaScript 4%, Other 3%"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/semana.svg"><img src="assets/oscuro/en/semana.svg" width="32.9%" alt="Week: 51% on weekends."></picture>
-<a href="https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/cv.svg"><img src="assets/oscuro/en/cv.svg" width="32.9%" alt="Résumé: Download PDF"></picture></a>
-<a href="mailto:Briandcastro11b@gmail.com"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/cierre.svg"><img src="assets/oscuro/en/cierre.svg" width="66.4%" alt="LET&#x27;S AUTOMATE SOMETHING? Email me."></picture></a>
+<br>
+
+<p align="center">I automate the repetitive with <b>n8n</b> and build web and mobile apps end to end.</p>
+
+<p align="center">
+<a href="mailto:Briandcastro11b@gmail.com"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/btn-escribeme.svg"><img src="assets/oscuro/en/btn-escribeme.svg" height="44" alt="Email me"></picture></a>&nbsp;
+<a href="https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/btn-cv.svg"><img src="assets/oscuro/en/btn-cv.svg" height="44" alt="Résumé"></picture></a>&nbsp;
+<a href="README.md"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/btn-idioma.svg"><img src="assets/oscuro/en/btn-idioma.svg" height="44" alt="Español"></picture></a>
 </p>
+
+<img src="assets/cinta.svg" width="100%" alt="Stack: TypeScript, React, Next.js, Node.js, .NET, PostgreSQL, MongoDB, Supabase, n8n, Power Automate, Power BI, Docker, Unity">

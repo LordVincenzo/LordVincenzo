@@ -1,21 +1,13 @@
-<p align="right"><a href="README.en.md"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/idioma.svg"><img src="assets/oscuro/es/idioma.svg" height="30" alt="Read in English"></picture></a></p>
+<img src="assets/banner-es.gif" width="100%" alt="Briand Castro, analista y desarrollador de software. Soledad, Colombia. Animación de un agujero negro con su disco de luz girando.">
 
-<p>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/nombre.svg"><img src="assets/oscuro/es/nombre.svg" width="66.4%" alt="Briand Castro — Analista Y Desarrollador De Software"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/flujo.svg"><img src="assets/oscuro/es/flujo.svg" width="32.9%" alt="Flujo de automatización animado. Soledad, Colombia."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/consola.gif"><img src="assets/oscuro/es/consola.gif" width="32.9%" alt="Animación de una terminal ejecutando un flujo de automatización paso a paso"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/sobre.svg"><img src="assets/oscuro/es/sobre.svg" width="66.4%" alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo aplicaciones web y móviles de punta a punta y automatizo procesos. Gestiono la plataforma educativa Prizma en la Corporación Universitaria Americana, donde automaticé el cargue de cursos con n8n. Me interesan la IA que corre en local, las apps en tiempo real y los flujos de automatización."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-commits.svg"><img src="assets/oscuro/es/cifra-commits.svg" width="32.9%" alt="COMMITS: 165. en 5 proyectos, último año"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-dias.svg"><img src="assets/oscuro/es/cifra-dias.svg" width="32.9%" alt="DÍAS ACTIVOS: 27. con al menos un commit"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-racha.svg"><img src="assets/oscuro/es/cifra-racha.svg" width="32.9%" alt="MEJOR RACHA: 4. días seguidos"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/hago.svg"><img src="assets/oscuro/es/hago.svg" width="100%" alt="Web y móvil de punta a punta. Interfaces, APIs y bases de datos: de la idea a la app funcionando. Que lo repetitivo lo haga el sistema. Flujos con n8n y Power Automate que ahorran horas de trabajo manual. Datos que se entienden. Reportes y tableros en Power BI sobre bases SQL y NoSQL."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/stack.svg"><img src="assets/oscuro/es/stack.svg" width="66.4%" alt="Stack: LENGUAJES: TypeScript, JavaScript, C#, PHP, SQL; FRONTEND Y MÓVIL: React, Next.js, Tailwind CSS, Ionic, Capacitor; BACKEND Y DATOS: Node.js, .NET 8, PostgreSQL, MySQL, MongoDB, Supabase, Firebase; AUTOMATIZACIÓN E IA: n8n, Power Automate, Power BI, Ollama, Whisper; HERRAMIENTAS: Git, Docker, Unity, VS Code, SAP"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/ruta.svg"><img src="assets/oscuro/es/ruta.svg" width="32.9%" alt="Trayectoria: Gestor de Plataforma Prizma, Corporación Universitaria Americana (SEP 2025 — HOY); Calidad de Proveedores, Procaps (ENE — JUL 2025); Tecnólogo ADSO, SENA (2023 — 2025)"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/ciudad.svg"><img src="assets/oscuro/es/ciudad.svg" width="100%" alt="Ciudad De Commits: Cada edificio es un día; la altura, sus commits. 165 commits."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/calor.svg"><img src="assets/oscuro/es/calor.svg" width="66.4%" alt="ACTIVIDAD · ÚLTIMO AÑO: commits en 5 proyectos · datos al 10 nov 2026."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/reloj.svg"><img src="assets/oscuro/es/reloj.svg" width="32.9%" alt="Hora Pico: 10 a. m.."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/lenguajes.svg"><img src="assets/oscuro/es/lenguajes.svg" width="66.4%" alt="Lenguajes · 5 Proyectos Recientes: C# 45%, TypeScript 23%, SQL 11%, HTML 9%, Python 6%, JavaScript 4%, Otros 3%"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/semana.svg"><img src="assets/oscuro/es/semana.svg" width="32.9%" alt="Semana: 51 % en fin de semana."></picture>
-<a href="https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cv.svg"><img src="assets/oscuro/es/cv.svg" width="32.9%" alt="Hoja De Vida: Descargar PDF"></picture></a>
-<a href="mailto:Briandcastro11b@gmail.com"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cierre.svg"><img src="assets/oscuro/es/cierre.svg" width="66.4%" alt="¿AUTOMATIZAMOS ALGO JUNTOS? Escríbeme."></picture></a>
+<br>
+
+<p align="center">Automatizo lo repetitivo con <b>n8n</b> y construyo apps web y móviles de punta a punta.</p>
+
+<p align="center">
+<a href="mailto:Briandcastro11b@gmail.com"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/btn-escribeme.svg"><img src="assets/oscuro/es/btn-escribeme.svg" height="44" alt="Escríbeme"></picture></a>&nbsp;
+<a href="https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/btn-cv.svg"><img src="assets/oscuro/es/btn-cv.svg" height="44" alt="Hoja de vida"></picture></a>&nbsp;
+<a href="README.en.md"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/btn-idioma.svg"><img src="assets/oscuro/es/btn-idioma.svg" height="44" alt="English"></picture></a>
 </p>
+
+<img src="assets/cinta.svg" width="100%" alt="Stack: TypeScript, React, Next.js, Node.js, .NET, PostgreSQL, MongoDB, Supabase, n8n, Power Automate, Power BI, Docker, Unity">
