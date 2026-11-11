@@ -2,7 +2,7 @@
 
 <p align="center"><img src="assets/portada-es.gif" width="100%" alt="Briand Castro, analista y desarrollador de software. Animación de un agujero negro rodeado de lluvia de código."></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/yo.svg"><img src="assets/oscuro/es/yo.svg" width="100%" alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo apps web y móviles y automatizo el trabajo repetitivo. Hoy gestiono la plataforma Prizma en la Corporación Universitaria Americana y trabajo en inteligencia artificial institucional y en automatización y gestión de procesos. Soledad, Colombia."></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/yo.svg"><img src="assets/oscuro/es/yo.svg" width="100%" alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo apps web y móviles y automatizo el trabajo repetitivo. Hoy gestiono la plataforma Prizma en la Corporación Universitaria Americana creo asistentes de IA personalizados (clonación de voz, reconocimiento con Whisper, modelo en servidor) y manejo lógica, datos y automatizaciones internas. Soledad, Colombia."></picture></p>
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/stack.svg"><img src="assets/oscuro/es/stack.svg" width="100%" alt="Stack: C#, TypeScript, JavaScript, PHP, Python, SQL; React, Next.js, Tailwind, Ionic, Capacitor; .NET, Node.js, PostgreSQL, MySQL, MongoDB, Supabase, Firebase, Power BI; n8n, Power Automate, Ollama; Git, Docker, Unity, VS Code, SAP."></picture></p>
 

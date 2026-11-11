@@ -14,7 +14,7 @@ TEXTOS = {
  "es": dict(sobre="SOBRE MÍ", t1="CONSTRUYO Y", t2="AUTOMATIZO.",
     par=[[("Tecnólogo en ", 0), ("Análisis y Desarrollo de Software", 1), (". Construyo", 0)], [("apps web y móviles de punta a punta y pongo al sistema a", 0)], [("hacer el trabajo repetitivo.", 0)], None,
          [("Hoy gestiono la plataforma educativa ", 0), ("Prizma", 1), (" en la", 0)], [("Corporación ", 0), ("Universitaria Americana", 1), (".", 0)]],
-    hoy_t="EN LO QUE ANDO HOY", hoy_x=236, hoy=[("Inteligencia artificial", "IA", "Creo soluciones de IA para uso institucional."), ("Automatización de procesos", "AUTO", "Sistemas que gestionan y automatizan procesos internos.")],
+    hoy_t="EN LO QUE ANDO HOY", hoy_x=236, hoy=[("Inteligencia artificial a la medida", "IA", ["Creo asistentes de IA personalizados: clonación de voz,", "reconocimiento con Whisper y el modelo corriendo en servidor."]), ("Lógica, datos y automatización", "AUTO", ["Manejo de la información a nivel de lógica y datos, y", "automatizaciones internas: carpetas y matrices enlazadas."])],
     vivo="EN VIVO · MODO CONCENTRACIÓN", stack="STACK · ASÍ FLUYE UN PROYECTO", grupos=["LENGUAJES", "FRONTEND Y MÓVIL", "BACKEND Y DATOS", "AUTOMATIZACIÓN E IA", "HERRAMIENTAS"],
     act="ACTIVIDAD", c_en="commits en 5 proyectos", st=["días activos", "mejor racha", "en fin de semana"], sem="COMMITS POR SEMANA", pico="{n} en una semana", dia="DÍA A DÍA",
     meses=["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"], hora="HORA DEL DÍA", h10="10 a. m.", dsem="DÍA DE LA SEMANA", letras="LMXJVSD",
@@ -24,7 +24,7 @@ TEXTOS = {
     paso="SIGUIENTE PASO", c1="¿AUTOMATIZAMOS", c2="ALGO JUNTOS?", cs1="Cuéntame qué tarea repetitiva te quita tiempo", cs2="y la convertimos en un flujo que corre solo.", abajo="Hoja de vida y contacto, aquí abajo ↓",
     tareas="TAREAS", hecho="HECHO", b_cv="Descargar hoja de vida ↓", b_mail="Escríbeme →", b_idioma="English →",
     alt=dict(banner="Briand Castro, analista y desarrollador de software. Animación de un agujero negro rodeado de lluvia de código.",
-        yo="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo apps web y móviles y automatizo el trabajo repetitivo. Hoy gestiono la plataforma Prizma en la Corporación Universitaria Americana y trabajo en inteligencia artificial institucional y en automatización y gestión de procesos. Soledad, Colombia.",
+        yo="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo apps web y móviles y automatizo el trabajo repetitivo. Hoy gestiono la plataforma Prizma en la Corporación Universitaria Americana creo asistentes de IA personalizados (clonación de voz, reconocimiento con Whisper, modelo en servidor) y manejo lógica, datos y automatizaciones internas. Soledad, Colombia.",
         stack="Stack: C#, TypeScript, JavaScript, PHP, Python, SQL; React, Next.js, Tailwind, Ionic, Capacitor; .NET, Node.js, PostgreSQL, MySQL, MongoDB, Supabase, Firebase, Power BI; n8n, Power Automate, Ollama; Git, Docker, Unity, VS Code, SAP.",
         actividad="Actividad del último año: 165 commits en 5 proyectos, 27 días activos, mejor racha de 4 días, 51 % en fin de semana, hora pico 10 a. m.",
         ruta="Trayectoria: Tecnólogo ADSO en el SENA (2023-2025), Calidad de Proveedores en Procaps (enero a julio de 2025), Gestor de Plataforma Prizma en la Corporación Universitaria Americana (septiembre de 2025 a hoy).",
@@ -32,7 +32,7 @@ TEXTOS = {
  "en": dict(sobre="ABOUT ME", t1="I BUILD AND", t2="AUTOMATE.",
     par=[[("Technologist in ", 0), ("Software Analysis and Development", 1), (". I build", 0)], [("web and mobile apps end to end and make the system", 0)], [("do the repetitive work.", 0)], None,
          [("Today I manage the ", 0), ("Prizma", 1), (" learning platform at", 0)], [("Corporación ", 0), ("Universitaria Americana", 1), (".", 0)]],
-    hoy_t="WHAT I'M ON TODAY", hoy_x=226, hoy=[("Artificial intelligence", "AI", "I build AI solutions for institutional use."), ("Process automation", "AUTO", "Systems that manage and automate internal processes.")],
+    hoy_t="WHAT I'M ON TODAY", hoy_x=226, hoy=[("Custom artificial intelligence", "AI", ["I build custom AI assistants: voice cloning, speech", "recognition with Whisper and the model running on a server."]), ("Logic, data and automation", "AUTO", ["Handling information at the logic and data level, plus", "internal automations: linked folders and matrices."])],
     vivo="LIVE · FOCUS MODE", stack="STACK · HOW A PROJECT FLOWS", grupos=["LANGUAGES", "FRONTEND & MOBILE", "BACKEND & DATA", "AUTOMATION & AI", "TOOLS"],
     act="ACTIVITY", c_en="commits across 5 projects", st=["active days", "best streak", "on weekends"], sem="COMMITS PER WEEK", pico="{n} in one week", dia="DAY BY DAY",
     meses=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], hora="HOUR OF DAY", h10="10 a.m.", dsem="DAY OF WEEK", letras="MTWTFSS",
@@ -42,7 +42,7 @@ TEXTOS = {
     paso="NEXT STEP", c1="SHALL WE AUTOMATE", c2="SOMETHING?", cs1="Tell me which repetitive task eats your time", cs2="and we'll turn it into a flow that runs itself.", abajo="Résumé and contact, right below ↓",
     tareas="TASKS", hecho="DONE", b_cv="Download résumé ↓", b_mail="Write to me →", b_idioma="Español →",
     alt=dict(banner="Briand Castro, software analyst and developer. Animation of a black hole surrounded by falling code.",
-        yo="About me: technologist in Software Analysis and Development. I build web and mobile apps and automate repetitive work. Today I manage the Prizma platform at Corporación Universitaria Americana and work on institutional artificial intelligence and on process automation and management. Soledad, Colombia.",
+        yo="About me: technologist in Software Analysis and Development. I build web and mobile apps and automate repetitive work. Today I manage the Prizma platform at Corporación Universitaria Americana build custom AI assistants (voice cloning, Whisper speech recognition, model on a server) and handle logic, data and internal automations. Soledad, Colombia.",
         stack="Stack: C#, TypeScript, JavaScript, PHP, Python, SQL; React, Next.js, Tailwind, Ionic, Capacitor; .NET, Node.js, PostgreSQL, MySQL, MongoDB, Supabase, Firebase, Power BI; n8n, Power Automate, Ollama; Git, Docker, Unity, VS Code, SAP.",
         actividad="Activity over the last year: 165 commits across 5 projects, 27 active days, best streak of 4 days, 51% on weekends, peak hour 10 a.m.",
         ruta="Career: Software Technologist at SENA (2023-2025), Supplier Quality at Procaps (January to July 2025), Prizma Platform Manager at Corporación Universitaria Americana (September 2025 to now).",
@@ -125,7 +125,7 @@ def escena(ox, oy):
     s.append('</g>'); return "".join(s)
 
 def yo():
-    H = 560; s = [base(H, 11, .6, "a")]
+    H = 604; s = [base(H, 11, .6, "a")]
     s.append(rot(48, 62, T["sobre"]))
     s.append(f'<text font-family="{DISP}" font-weight="900" font-size="40" fill="{FG}"><tspan x="46" y="122">{T["t1"]}</tspan><tspan x="46" y="166">{T["t2"]}</tspan></text>')
     par = T["par"]
@@ -140,10 +140,10 @@ def yo():
         s.append(f'<circle cx="54" cy="{y-6}" r="4" fill="{FG}"><animate attributeName="opacity" values="1;.25;1" dur="2.4s" begin="{-i*.6}s" repeatCount="indefinite"/></circle>'
                  f'<text x="70" y="{y}" font-family="{SANS}" font-size="16.5" font-weight="800" fill="{FG}">{n}</text>'
                  f'<rect x="{590-len(et)*8.4-18:.0f}" y="{y-16}" width="{len(et)*8.4+18:.0f}" height="21" rx="6" fill="none" stroke="{TE}"/><text x="{590-(len(et)*8.4+18)/2:.0f}" y="{y-1}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{GR}" letter-spacing="1">{et}</text>'
-                 f'<text x="70" y="{y+20}" font-family="{SANS}" font-size="13.5" fill="{GR}">{esc(d)}</text>'); y += 52
+                 "".join(f'<text x="70" y="{y+21+j*19}" font-family="{SANS}" font-size="13.5" fill="{GR}">{esc(l)}</text>' for j, l in enumerate(d))); y += 74
     s.append(f'<g font-family="{MONO}" font-size="12.5"><rect x="640" y="{H-64}" width="176" height="30" rx="15" fill="none" stroke="{TE}"/><circle cx="656" cy="{H-49}" r="4" fill="{FG}"><animate attributeName="opacity" values="1;.2;1" dur="1.6s" repeatCount="indefinite"/></circle><text x="668" y="{H-44.5}" fill="{FG}">Soledad, Colombia</text></g>')
     import pixel
-    sx, sy = 640, 92
+    sx, sy = 640, 112
     s.append(f'<defs><clipPath id="pxc"><rect x="{sx}" y="{sy}" width="528" height="360" rx="14"/></clipPath></defs><g clip-path="url(#pxc)"><g transform="translate({sx} {sy})">{pixel.svg(3)}</g></g>'
              f'<rect x="{sx}" y="{sy}" width="528" height="360" rx="14" fill="none" stroke="{BORDE}" stroke-width="1.5"/>')
     s.append(f'<text x="{sx+528}" y="{sy+386}" text-anchor="end" font-family="{MONO}" font-size="11.5" fill="{TE}" letter-spacing="2">{T["vivo"]}</text><circle cx="{sx+528-len(T["vivo"])*8.95-16:.0f}" cy="{sy+382}" r="3.5" fill="{FG}"><animate attributeName="opacity" values="1;.15;1" dur="1.4s" repeatCount="indefinite"/></circle>')
