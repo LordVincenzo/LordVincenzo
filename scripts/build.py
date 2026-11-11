@@ -14,7 +14,21 @@ SANS = "'Segoe UI', Inter, -apple-system, 'Helvetica Neue', Arial, sans-serif"
 MONO = "ui-monospace, 'Cascadia Code', 'SFMono-Regular', Consolas, 'DejaVu Sans Mono', monospace"
 DISPLAY = "'Arial Black', 'Segoe UI Black', Inter, 'Helvetica Neue', Arial, sans-serif"
 NEGRO, BLANCO = "#050505", "#ffffff"          # absolutos: no cambian con el tema
-W1, W2, W3 = 400, 807, 1214                   # un tercio, dos tercios, fila completa
+W1, W2, W3 = 390, 802, 1214                   # un tercio, dos tercios, fila completa
+G, V = 22, 22                                 # separación entre bloques: horizontal y vertical
+# Lugar de cada bloque en su fila. La separación va dentro del propio SVG, como margen transparente.
+POS = {"sobre": "ini", "consola": "fin", "galaxia": "ini", "ruta": "fin", "cifra-commits": "ini", "cifra-dias": "med", "cifra-hora": "fin", "cv": "ini", "cierre": "fin"}
+
+
+def margenes(nombre):
+    pos = POS.get(nombre, "todo")
+    return (G / 2 if pos in ("med", "fin") else 0), (G / 2 if pos in ("ini", "med") else 0)
+
+
+def ancho_pct(nombre, base, en_fila):
+    """Ancho en % para el README: proporcional a sus unidades, dejando sitio a los espacios entre imágenes."""
+    izq, der = margenes(nombre)
+    return f"{(base + izq + der) / W3 * (100 - .6 * (en_fila - 1)):.2f}%"
 CORREO = "Briandcastro11b@gmail.com"
 CV = "https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf"
 e = html.escape
@@ -100,9 +114,11 @@ def usar(tema, idioma):
 
 
 def save(name, W, H, label, body, style="", defs=""):
+    izq, der = margenes(name[:-4])
     with open(os.path.join(OUT, name), "w", encoding="utf-8") as f:
-        f.write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="{e(label)}">'
-                f'<defs><clipPath id="clip"><rect width="{W}" height="{H}" rx="16"/></clipPath>{defs}</defs><style>{style}{REDUCE}</style>{body}</svg>')
+        f.write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W+izq+der:g} {H+V}" width="{W+izq+der:g}" height="{H+V}" role="img" aria-label="{e(label)}">'
+                f'<defs><clipPath id="clip"><rect width="{W}" height="{H}" rx="16"/></clipPath>{defs}</defs><style>{style}{REDUCE}</style>'
+                f'<g transform="translate({izq:g},0)">{body}</g></svg>')
 
 
 def fondo(W, H, tono="base", malla=False):
@@ -139,17 +155,17 @@ def cargar(nombre):
 # ───────────── flujo de automatización ─────────────
 # ───────────── sobre mí ─────────────
 def sobre():
-    W, H = W2, 304
-    y, txt = 96, ""
+    W, H = W2, 340
+    y, txt = 116, ""
     for l in T["sobre_txt"]:
         if l is None:
-            y += 14
+            y += 16
             continue
-        txt += f'<text x="40" y="{y}" font-family="{SANS}" font-size="19" fill="{GRIS}">' + "".join(
+        txt += f'<text x="48" y="{y}" font-family="{SANS}" font-size="19" fill="{GRIS}">' + "".join(
             f'<tspan fill="{FG}" font-weight="700">{e(t)}</tspan>' if b else e(t) for t, b in l) + "</text>"
-        y += 28
-    body = f'{fondo(W, H)}{rotulo(40, 52, T["sobre"])}<rect class="b" x="40" y="66" width="60" height="3" fill="{ACENTO}"/>{txt}'
-    save("sobre.svg", W, H, T["sobre_alt"], body, ".b{animation:b 4s ease-in-out infinite;transform-origin:40px 0}@keyframes b{50%{transform:scaleX(4)}}")
+        y += 29
+    body = f'{fondo(W, H)}{rotulo(48, 62, T["sobre"])}<rect class="b" x="48" y="78" width="60" height="3" fill="{ACENTO}"/>{txt}'
+    save("sobre.svg", W, H, T["sobre_alt"], body, ".b{animation:b 4s ease-in-out infinite;transform-origin:48px 0}@keyframes b{50%{transform:scaleX(4)}}")
 
 
 # ───────────── cifras ─────────────
@@ -167,17 +183,17 @@ def cifra(fn, tono, valor, etiqueta, nota, tam=104):
 
 # ───────────── qué hago ─────────────
 def hago():
-    W, H = W3, 300
+    W, H = W3, 366
     body = fondo(W, H)
     for i, (tag, tit, desc) in enumerate(T["hago"]):
-        y = i * 100
-        body += ((f'<line x1="36" x2="{W-36}" y1="{y}" y2="{y}" stroke="{LINEA}"/>' if i else "")
-                 + f'<g clip-path="url(#clip)"><rect class="s s{i}" x="0" y="{y+1}" width="8" height="98" fill="{ACENTO}"/></g>'
-                 f'<text x="40" y="{y+68}" font-family="{DISPLAY}" font-size="56" font-weight="900" fill="none" stroke="{TENUE}" stroke-width="1.6" textLength="84" lengthAdjust="spacingAndGlyphs">0{i+1}</text>'
-                 f'<text x="160" y="{y+42}" font-family="{MONO}" font-size="12.5" font-weight="700" letter-spacing="3" fill="{ACENTO}">{tag}</text>'
-                 f'<text x="160" y="{y+74}" font-family="{SANS}" font-size="25" font-weight="800" fill="{FG}">{e(tit)}</text>'
-                 f'<text x="626" y="{y+58}" font-family="{SANS}" font-size="14" fill="{GRIS}">{e(desc)}</text>'
-                 f'<path class="fl s{i}" d="M{W-76} {y+52} h26 m-10 -10 l10 10 l-10 10" fill="none" stroke="{FG}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>')
+        y = i * 122
+        body += ((f'<line x1="48" x2="{W-48}" y1="{y}" y2="{y}" stroke="{LINEA}"/>' if i else "")
+                 + f'<g clip-path="url(#clip)"><rect class="s s{i}" x="0" y="{y+1}" width="8" height="120" fill="{ACENTO}"/></g>'
+                 f'<text x="48" y="{y+80}" font-family="{DISPLAY}" font-size="56" font-weight="900" fill="none" stroke="{TENUE}" stroke-width="1.6" textLength="84" lengthAdjust="spacingAndGlyphs">0{i+1}</text>'
+                 f'<text x="176" y="{y+52}" font-family="{MONO}" font-size="12.5" font-weight="700" letter-spacing="3" fill="{ACENTO}">{tag}</text>'
+                 f'<text x="176" y="{y+86}" font-family="{SANS}" font-size="25" font-weight="800" fill="{FG}">{e(tit)}</text>'
+                 f'<text x="640" y="{y+68}" font-family="{SANS}" font-size="14.5" fill="{GRIS}">{e(desc)}</text>'
+                 f'<path class="fl s{i}" d="M{W-84} {y+63} h26 m-10 -10 l10 10 l-10 10" fill="none" stroke="{FG}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>')
     style = (".s{animation:s 6s ease-in-out infinite;opacity:.18}.s1{animation-delay:2s}.s2{animation-delay:4s}@keyframes s{0%,34%,100%{opacity:.18}8%,26%{opacity:1}}"
              ".fl{animation:fl 6s ease-in-out infinite;opacity:.25}.fl.s1{animation-delay:2s}.fl.s2{animation-delay:4s}@keyframes fl{0%,34%,100%{opacity:.25;transform:translateX(0)}8%,26%{opacity:1;transform:translateX(8px)}}")
     save("hago.svg", W, H, " ".join(f"{t}. {d}" for _, t, d in T["hago"]), body, style)
@@ -201,16 +217,16 @@ def stack_titulo():
 
 
 def ruta():
-    W, H = W1, 300
-    body = fondo(W, H) + rotulo(32, 50, T["ruta"]) + f'<line x1="44" x2="44" y1="90" y2="230" stroke="{LINEA}" stroke-width="2"/><line class="l" x1="44" x2="44" y1="90" y2="230" stroke="{ACENTO}" stroke-width="2.5"/>'
+    W, H = W1, 350
+    body = fondo(W, H) + rotulo(32, 50, T["ruta"]) + f'<line x1="44" x2="44" y1="104" y2="276" stroke="{LINEA}" stroke-width="2"/><line class="l" x1="44" x2="44" y1="104" y2="276" stroke="{ACENTO}" stroke-width="2.5"/>'
     for i, (fecha, tit, org) in enumerate(T["hitos"]):
-        y, hoy = 94 + i * 66, i == 0
+        y, hoy = 108 + i * 82, i == 0
         body += ((f'<circle class="ping" cx="44" cy="{y}" r="8" fill="none" stroke="{ACENTO}" stroke-width="2"/>' if hoy else "")
                  + f'<circle cx="44" cy="{y}" r="8" fill="{ACENTO if hoy else BG}" stroke="{ACENTO if hoy else FG}" stroke-width="2.5"/>'
                  f'<text x="70" y="{y+4}" font-family="{MONO}" font-size="11.5" font-weight="700" letter-spacing="2" fill="{GRIS}">{fecha}</text>'
-                 f'<text x="70" y="{y+28}" font-family="{SANS}" font-size="18" font-weight="800" fill="{FG}">{e(tit)}</text>'
-                 f'<text x="70" y="{y+47}" font-family="{SANS}" font-size="13" fill="{GRIS}">{e(org)}</text>')
-    style = (".l{stroke-dasharray:160;animation:l 6s ease-in-out infinite}@keyframes l{0%{stroke-dashoffset:160}50%,100%{stroke-dashoffset:0}}"
+                 f'<text x="70" y="{y+28}" font-family="{SANS}" font-size="18.5" font-weight="800" fill="{FG}">{e(tit)}</text>'
+                 f'<text x="70" y="{y+50}" font-family="{SANS}" font-size="13.5" fill="{GRIS}">{e(org)}</text>')
+    style = (".l{stroke-dasharray:172;animation:l 6s ease-in-out infinite}@keyframes l{0%{stroke-dashoffset:172}50%,100%{stroke-dashoffset:0}}"
              ".ping{animation:ping 2s ease-out infinite;transform-box:fill-box;transform-origin:center}@keyframes ping{to{transform:scale(2.6);opacity:0}}")
     save("ruta.svg", W, H, f"{T['ruta'].title()}: " + "; ".join(f"{t}, {o} ({f})" for f, t, o in T["hitos"]), body, style)
 
@@ -232,7 +248,7 @@ def semanas(data):
 def galaxia(data):
     """Una galaxia espiral hecha con los commits: el tiempo avanza del centro hacia el borde por dos brazos."""
     import random
-    W, H = W2, 300
+    W, H = W2, 350
     fin = dt.date.fromisoformat(data["hasta"])
     cuenta = [data["dias"].get((fin - dt.timedelta(days=364 - k)).isoformat(), 0) for k in range(365)]
     r = random.Random(42)
@@ -254,7 +270,7 @@ def galaxia(data):
     defs = (f'<radialGradient id="halo"><stop offset="0" stop-color="{FG}" stop-opacity=".5"/><stop offset=".4" stop-color="{FG}" stop-opacity=".12"/><stop offset="1" stop-color="{FG}" stop-opacity="0"/></radialGradient>'
             '<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>')
     body = (f'<g clip-path="url(#clip)"><rect width="{W}" height="{H}" fill="{BG}"/>'
-            f'<g transform="translate(486 146) rotate(-14) scale(1 .47)"><circle r="320" fill="url(#halo)" opacity=".3"/><g class="gal">{polvo}{soles}</g>'
+            f'<g transform="translate(476 170) rotate(-14) scale(1.08 .52)"><circle r="320" fill="url(#halo)" opacity=".3"/><g class="gal">{polvo}{soles}</g>'
             f'<circle r="84" fill="url(#halo)"/><circle r="20" fill="{FG}" filter="url(#blur)"/><circle r="10" fill="{FG}"/></g></g>'
             f'<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="15" fill="none" stroke="{LINEA}" stroke-width="1.5"/>'
             f'{rotulo(36, 50, T["gal"])}<text x="36" y="{H-30}" font-family="{SANS}" font-size="13.5" fill="{GRIS}">{e(T["gal_n"])}</text>')
@@ -311,16 +327,18 @@ def readme(idioma, alts):
     def icono(nombre, slug):
         return (f'<picture><source media="(prefers-color-scheme: light)" srcset="https://cdn.simpleicons.org/{slug}/0d0d0d">'
                 f'<img src="https://cdn.simpleicons.org/{slug}/f2f2f2" height="34" alt="{e(nombre)}" title="{e(nombre)}"></picture>')
-    fila = lambda *xs: [img(x[0], x[1], alts[x[0]], x[2] if len(x) > 2 else None) for x in xs]
+    BASE = {"sobre": W2, "consola": W1, "hago": W3, "galaxia": W2, "ruta": W1, "cifra-commits": W1, "cifra-dias": W1, "cifra-hora": W1, "cv": W1, "cierre": W2}
+    def fila(*xs):
+        return [img(x[0], ancho_pct(x[0], BASE[x[0]], len(xs)), alts[x[0]], x[1] if len(x) > 1 else None) for x in xs]
     sep = "&nbsp;&nbsp;&nbsp;&nbsp;\n"
     out = [f'<p align="right">{img("idioma", None, T_["otro"][2], T_["otro"][1], alto=30)}</p>', "",
-           "<p>", f'<img src="assets/banner-{idioma}.gif" width="100%" alt="{e(T_["banner"])}">']
-    out += fila(("sobre", "66.4%"), ("consola", "32.9%"), ("hago", "100%")) + ["</p>", "",
+           f'<p><img src="assets/banner-{idioma}.gif" width="100%" alt="{e(T_["banner"])}"></p>', "", "<p>"]
+    out += fila(("sobre",), ("consola",)) + fila(("hago",)) + ["</p>", "",
             img("stack-titulo", "100%", "Stack"), "",
             '<p align="center">', sep.join(icono(*i) for i in ICONOS[0]), "<br><br>", sep.join(icono(*i) for i in ICONOS[1]),
-            "<br><br>", "<sub>" + " &nbsp;·&nbsp; ".join(SIN_ICONO) + "</sub>", "</p>", "", "<p>"]
-    out += fila(("galaxia", "66.4%"), ("ruta", "32.9%"), ("cifra-commits", "32.9%"), ("cifra-dias", "32.9%"), ("cifra-hora", "32.9%"),
-                ("cv", "32.9%", CV), ("cierre", "66.4%", f"mailto:{CORREO}")) + ["</p>", ""]
+            "<br><br>", "<sub>" + " &nbsp;·&nbsp; ".join(SIN_ICONO) + "</sub>", "</p>", "", "<br>", "", "<p>"]
+    out += (fila(("galaxia",), ("ruta",)) + fila(("cifra-commits",), ("cifra-dias",), ("cifra-hora",))
+            + fila(("cv", CV), ("cierre", f"mailto:{CORREO}")) + ["</p>", ""])
     with open(os.path.join(ROOT, T_["otro"][1] == "README.md" and "README.en.md" or "README.md"), "w", encoding="utf-8") as f:
         f.write("\n".join(out))
 

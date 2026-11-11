@@ -1,10 +1,11 @@
 <p align="right"><a href="README.en.md"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/idioma.svg"><img src="assets/oscuro/es/idioma.svg" height="30" alt="Read in English"></picture></a></p>
 
+<p><img src="assets/banner-es.gif" width="100%" alt="Briand Castro, analista y desarrollador de software. Animación de un agujero negro con su disco de luz girando."></p>
+
 <p>
-<img src="assets/banner-es.gif" width="100%" alt="Briand Castro, analista y desarrollador de software. Animación de un agujero negro con su disco de luz girando.">
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/sobre.svg"><img src="assets/oscuro/es/sobre.svg" width="66.4%" alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo aplicaciones web y móviles de punta a punta y automatizo procesos. Gestiono la plataforma educativa Prizma en la Corporación Universitaria Americana, donde automaticé el cargue de cursos con n8n. Me interesan la IA que corre en local, las apps en tiempo real y los flujos de automatización."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/consola.gif"><img src="assets/oscuro/es/consola.gif" width="32.9%" alt="Animación de una terminal ejecutando un flujo de automatización paso a paso"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/hago.svg"><img src="assets/oscuro/es/hago.svg" width="100%" alt="Web y móvil de punta a punta. Interfaces, APIs y bases de datos: de la idea a la app funcionando. Que lo repetitivo lo haga el sistema. Flujos con n8n y Power Automate que ahorran horas de trabajo manual. Datos que se entienden. Reportes y tableros en Power BI sobre bases SQL y NoSQL."></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/sobre.svg"><img src="assets/oscuro/es/sobre.svg" width="66.57%" alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo aplicaciones web y móviles de punta a punta y automatizo procesos. Gestiono la plataforma educativa Prizma en la Corporación Universitaria Americana, donde automaticé el cargue de cursos con n8n. Me interesan la IA que corre en local, las apps en tiempo real y los flujos de automatización."></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/consola.gif"><img src="assets/oscuro/es/consola.gif" width="32.83%" alt="Animación de una terminal ejecutando un flujo de automatización paso a paso"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/hago.svg"><img src="assets/oscuro/es/hago.svg" width="100.00%" alt="Web y móvil de punta a punta. Interfaces, APIs y bases de datos: de la idea a la app funcionando. Que lo repetitivo lo haga el sistema. Flujos con n8n y Power Automate que ahorran horas de trabajo manual. Datos que se entienden. Reportes y tableros en Power BI sobre bases SQL y NoSQL."></picture>
 </p>
 
 <picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/stack-titulo.svg"><img src="assets/oscuro/es/stack-titulo.svg" width="100%" alt="Stack"></picture>
@@ -35,12 +36,14 @@
 <sub>C# &nbsp;·&nbsp; Power BI &nbsp;·&nbsp; Power Automate &nbsp;·&nbsp; SAP &nbsp;·&nbsp; VS Code</sub>
 </p>
 
+<br>
+
 <p>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/galaxia.svg"><img src="assets/oscuro/es/galaxia.svg" width="66.4%" alt="Mi Año En Commits: Cada estrella es un día con commits; la galaxia gira."></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/ruta.svg"><img src="assets/oscuro/es/ruta.svg" width="32.9%" alt="Trayectoria: Gestor de Plataforma Prizma, Corporación Universitaria Americana (SEP 2025 — HOY); Calidad de Proveedores, Procaps (ENE — JUL 2025); Tecnólogo ADSO, SENA (2023 — 2025)"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-commits.svg"><img src="assets/oscuro/es/cifra-commits.svg" width="32.9%" alt="COMMITS: 165. en 5 proyectos, último año"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-dias.svg"><img src="assets/oscuro/es/cifra-dias.svg" width="32.9%" alt="DÍAS ACTIVOS: 27. con al menos un commit"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-hora.svg"><img src="assets/oscuro/es/cifra-hora.svg" width="32.9%" alt="HORA PICO: 10 a. m.. cuando más programo"></picture>
-<a href="https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cv.svg"><img src="assets/oscuro/es/cv.svg" width="32.9%" alt="Hoja De Vida: Descargar PDF"></picture></a>
-<a href="mailto:Briandcastro11b@gmail.com"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cierre.svg"><img src="assets/oscuro/es/cierre.svg" width="66.4%" alt="¿AUTOMATIZAMOS ALGO JUNTOS? Escríbeme."></picture></a>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/galaxia.svg"><img src="assets/oscuro/es/galaxia.svg" width="66.57%" alt="Mi Año En Commits: Cada estrella es un día con commits; la galaxia gira."></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/ruta.svg"><img src="assets/oscuro/es/ruta.svg" width="32.83%" alt="Trayectoria: Gestor de Plataforma Prizma, Corporación Universitaria Americana (SEP 2025 — HOY); Calidad de Proveedores, Procaps (ENE — JUL 2025); Tecnólogo ADSO, SENA (2023 — 2025)"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-commits.svg"><img src="assets/oscuro/es/cifra-commits.svg" width="32.63%" alt="COMMITS: 165. en 5 proyectos, último año"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-dias.svg"><img src="assets/oscuro/es/cifra-dias.svg" width="33.53%" alt="DÍAS ACTIVOS: 27. con al menos un commit"></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-hora.svg"><img src="assets/oscuro/es/cifra-hora.svg" width="32.63%" alt="HORA PICO: 10 a. m.. cuando más programo"></picture>
+<a href="https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cv.svg"><img src="assets/oscuro/es/cv.svg" width="32.83%" alt="Hoja De Vida: Descargar PDF"></picture></a>
+<a href="mailto:Briandcastro11b@gmail.com"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cierre.svg"><img src="assets/oscuro/es/cierre.svg" width="66.57%" alt="¿AUTOMATIZAMOS ALGO JUNTOS? Escríbeme."></picture></a>
 </p>
