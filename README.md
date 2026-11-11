@@ -2,7 +2,7 @@
 
 <p>
 <picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/nombre.svg"><img src="assets/oscuro/es/nombre.svg" width="66.4%" alt="Briand Castro — Analista Y Desarrollador De Software"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/robot.svg"><img src="assets/oscuro/es/robot.svg" width="32.9%" alt="Robot en pixel art programando en un portátil. Soledad, Colombia."></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/flujo.svg"><img src="assets/oscuro/es/flujo.svg" width="32.9%" alt="Flujo de automatización animado. Soledad, Colombia."></picture>
 <picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/consola.gif"><img src="assets/oscuro/es/consola.gif" width="32.9%" alt="Animación de una terminal ejecutando un flujo de automatización paso a paso"></picture>
 <picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/sobre.svg"><img src="assets/oscuro/es/sobre.svg" width="66.4%" alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo aplicaciones web y móviles de punta a punta y automatizo procesos. Gestiono la plataforma educativa Prizma en la Corporación Universitaria Americana, donde automaticé el cargue de cursos con n8n. Me interesan la IA que corre en local, las apps en tiempo real y los flujos de automatización."></picture>
 <picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cifra-commits.svg"><img src="assets/oscuro/es/cifra-commits.svg" width="32.9%" alt="COMMITS: 165. en 5 proyectos, último año"></picture>

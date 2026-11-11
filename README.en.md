@@ -2,7 +2,7 @@
 
 <p>
 <picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/nombre.svg"><img src="assets/oscuro/en/nombre.svg" width="66.4%" alt="Briand Castro — Software Analyst &amp; Developer"></picture>
-<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/robot.svg"><img src="assets/oscuro/en/robot.svg" width="32.9%" alt="Pixel-art robot coding on a laptop. Soledad, Colombia."></picture>
+<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/flujo.svg"><img src="assets/oscuro/en/flujo.svg" width="32.9%" alt="Animated automation workflow. Soledad, Colombia."></picture>
 <picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/consola.gif"><img src="assets/oscuro/en/consola.gif" width="32.9%" alt="Animated terminal running an automation workflow step by step"></picture>
 <picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/sobre.svg"><img src="assets/oscuro/en/sobre.svg" width="66.4%" alt="About me: technologist in Software Analysis and Development. I build web and mobile apps end to end and automate processes. I manage the Prizma learning platform at Corporación Universitaria Americana, where I automated course loading with n8n. I&#x27;m into AI that runs locally, real-time apps and automation workflows."></picture>
 <picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/cifra-commits.svg"><img src="assets/oscuro/en/cifra-commits.svg" width="32.9%" alt="COMMITS: 165. in 5 projects, past year"></picture>
