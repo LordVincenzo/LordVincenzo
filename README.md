@@ -1,6 +1,6 @@
 <p align="right"><a href="README.en.md"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/b-idioma.svg"><img src="assets/oscuro/es/b-idioma.svg" height="30" alt="Read in English"></picture></a></p>
 
-<p align="center"><img src="assets/banner-es.gif" width="100%" alt="Briand Castro, analista y desarrollador de software. Animación de un agujero negro rodeado de lluvia de código."></p>
+<p align="center"><img src="assets/portada-es.gif" width="100%" alt="Briand Castro, analista y desarrollador de software. Animación de un agujero negro rodeado de lluvia de código."></p>
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/yo.svg"><img src="assets/oscuro/es/yo.svg" width="100%" alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo apps web y móviles y automatizo el trabajo repetitivo. Hoy gestiono la plataforma Prizma en la Corporación Universitaria Americana y trabajo en inteligencia artificial institucional y en automatización y gestión de procesos. Soledad, Colombia."></picture></p>
 
@@ -8,8 +8,8 @@
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/actividad.svg"><img src="assets/oscuro/es/actividad.svg" width="100%" alt="Actividad del último año: 165 commits en 5 proyectos, 27 días activos, mejor racha de 4 días, 51 % en fin de semana, hora pico 10 a. m."></picture></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/ruta.svg"><img src="assets/oscuro/es/ruta.svg" width="100%" alt="Trayectoria: Tecnólogo ADSO en el SENA (2023-2025), Calidad de Proveedores en Procaps (enero a julio de 2025), Gestor de Plataforma Prizma en la Corporación Universitaria Americana (septiembre de 2025 a hoy)."></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/trayectoria.svg"><img src="assets/oscuro/es/trayectoria.svg" width="100%" alt="Trayectoria: Tecnólogo ADSO en el SENA (2023-2025), Calidad de Proveedores en Procaps (enero a julio de 2025), Gestor de Plataforma Prizma en la Corporación Universitaria Americana (septiembre de 2025 a hoy)."></picture></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/cierre.svg"><img src="assets/oscuro/es/cierre.svg" width="100%" alt="¿Automatizamos algo juntos? Cuéntame qué tarea repetitiva te quita tiempo."></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/contacto.svg"><img src="assets/oscuro/es/contacto.svg" width="100%" alt="¿Automatizamos algo juntos? Cuéntame qué tarea repetitiva te quita tiempo."></picture></p>
 
 <p align="center"><a href="https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/b-cv.svg"><img src="assets/oscuro/es/b-cv.svg" height="44" alt="Descargar hoja de vida (PDF)"></picture></a>&nbsp;&nbsp;&nbsp;<a href="mailto:Briandcastro11b@gmail.com"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/b-mail.svg"><img src="assets/oscuro/es/b-mail.svg" height="44" alt="Escríbeme por correo"></picture></a></p>

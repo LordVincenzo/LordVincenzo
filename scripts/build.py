@@ -271,7 +271,7 @@ def ruta():
                  f'<text x="{x+22}" y="{y+72}" font-family="{SANS}" font-weight="800" font-size="20" fill="{fg}">{a}</text><text x="{x+22}" y="{y+95}" font-family="{SANS}" font-size="13.5" fill="{sub}">{b}</text>'
                  f'<text font-family="{SANS}" font-size="13.5" fill="{sub}"><tspan x="{x+22}" y="{y+126}">{d[0]}</tspan><tspan x="{x+22}" y="{y+145}">{d[1]}</tspan></text>')
         if hoy: s.append(f'<circle cx="{x+cw-30}" cy="{y+ch-28}" r="5" fill="{BG}"/><circle cx="{x+cw-30}" cy="{y+ch-28}" r="5" fill="none" stroke="{BG}" stroke-width="1.5"><animate attributeName="r" values="5;15" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="1.8s" repeatCount="indefinite"/></circle>')
-    s.append(fin(H)); guardar("ruta.svg", "".join(s))
+    s.append(fin(H)); guardar("trayectoria.svg", "".join(s))
 
 # ---------------- 5. cierre con automatización ----------------
 def cierre():
@@ -303,7 +303,7 @@ def cierre():
         a = math.radians(ang); x = xm + 132 * math.cos(a); y = cy + 132 * math.sin(a)
         s.append(f'<g><animate attributeName="opacity" values=".45;1;.45" dur="3s" begin="{-i*.5}s" repeatCount="indefinite"/><circle cx="{x:.0f}" cy="{y:.0f}" r="22" fill="{BG}" stroke="{BORDE}" stroke-width="1.5"/>{icono(slug, x-11, y-11, 22)}</g>')
     s.append(f'<text x="{x0+40}" y="{cy+66}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{GR}" letter-spacing="2">{T["tareas"]}</text><text x="{x1-40}" y="{cy+66}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{GR}" letter-spacing="2">{T["hecho"]}</text>')
-    s.append(fin(H)); guardar("cierre.svg", "".join(s))
+    s.append(fin(H)); guardar("contacto.svg", "".join(s))
 
 def boton(fn, txt, lleno):
     w = 44 + len(txt) * 10.4; h = 50
@@ -314,8 +314,8 @@ def readme(idioma):
     T = TEXTOS[idioma]; A = T["alt"]
     pic = lambda f, attr, alt: f'<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/{idioma}/{f}"><img src="assets/oscuro/{idioma}/{f}" {attr} alt="{esc(alt)}"></picture>'
     L = [f'<p align="right"><a href="{T["otro"]}">{pic("b-idioma.svg", 'height="30"', A["idioma"])}</a></p>', "",
-         f'<p align="center"><img src="assets/banner-{idioma}.gif" width="100%" alt="{esc(A["banner"])}"></p>', ""]
-    for f in ("yo", "stack", "actividad", "ruta", "cierre"): L += [f'<p align="center">{pic(f + ".svg", 'width="100%"', A[f])}</p>', ""]
+         f'<p align="center"><img src="assets/portada-{idioma}.gif" width="100%" alt="{esc(A["banner"])}"></p>', ""]
+    for f, k in (("yo", "yo"), ("stack", "stack"), ("actividad", "actividad"), ("trayectoria", "ruta"), ("contacto", "cierre")): L += [f'<p align="center">{pic(f + ".svg", 'width="100%"', A[k])}</p>', ""]
     L += [f'<p align="center"><a href="https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf">{pic("b-cv.svg", 'height="44"', A["cv"])}</a>&nbsp;&nbsp;&nbsp;'
           f'<a href="mailto:Briandcastro11b@gmail.com">{pic("b-mail.svg", 'height="44"', A["mail"])}</a></p>', ""]
     open(os.path.join(ROOT, T["fn"]), "w", encoding="utf-8").write("\n".join(L))
