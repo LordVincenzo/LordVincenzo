@@ -1,393 +1,328 @@
-#!/usr/bin/env python3
-"""Genera los bloques del perfil: mosaico en negro, blanco y gris.
-
-    python scripts/build.py
-
-Crea cuatro juegos en assets/<tema>/<idioma>/ (oscuro o claro, es o en) y los dos README.
-El banner del agujero negro se genera aparte: ver scripts/agujero/LEEME.md.
-Los datos salen de data/actividad.json y data/lenguajes.json. Solo usa la librería estándar.
-"""
-import datetime as dt, html, json, math, os
-
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SANS = "'Segoe UI', Inter, -apple-system, 'Helvetica Neue', Arial, sans-serif"
-MONO = "ui-monospace, 'Cascadia Code', 'SFMono-Regular', Consolas, 'DejaVu Sans Mono', monospace"
-DISPLAY = "'Arial Black', 'Segoe UI Black', Inter, 'Helvetica Neue', Arial, sans-serif"
-NEGRO, BLANCO = "#050505", "#ffffff"          # absolutos: no cambian con el tema
-W1, W2, W3 = 390, 802, 1214                   # un tercio, dos tercios, fila completa
-G, V = 22, 22                                 # separación entre bloques: horizontal y vertical
-# Lugar de cada bloque en su fila. La separación va dentro del propio SVG, como margen transparente.
-POS = {"sobre": "ini", "consola": "fin", "galaxia": "ini", "ruta": "fin", "cifra-commits": "ini", "cifra-dias": "med", "cifra-hora": "fin", "cv": "ini", "cierre": "fin"}
-
-
-def margenes(nombre):
-    pos = POS.get(nombre, "todo")
-    return (G / 2 if pos in ("med", "fin") else 0), (G / 2 if pos in ("ini", "med") else 0)
-
-
-def ancho_pct(nombre, base, en_fila):
-    """Ancho en % para el README: proporcional a sus unidades, dejando sitio a los espacios entre imágenes."""
-    izq, der = margenes(nombre)
-    return f"{(base + izq + der) / W3 * (100 - .6 * (en_fila - 1)):.2f}%"
-CORREO = "Briandcastro11b@gmail.com"
-CV = "https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf"
-e = html.escape
-REDUCE = (".viaje{animation:viaje 9s linear infinite}@keyframes viaje{to{stroke-dashoffset:-1000}}"
-          "@media (prefers-reduced-motion:reduce){*{animation:none!important}}")
-
-TEMAS = {
-    # ACENTO: lo que se resalta (blanco sobre negro, negro sobre claro). MEDIO: el gris de los bloques de color.
-    "oscuro": dict(FG="#ffffff", BG="#0d0d0d", LINEA="#2b2b2b", VACIO="#1c1c1c", GRIS="#a3a3a3", TENUE="#666666", ACENTO="#ffffff", MEDIO="#707070",
-                   R_IZQ="#474747", R_DER="#8c8c8c", SUELO="#161616", SUELO_L="#242424",
-                   ESCALA=["#ffffff", "#cfcfcf", "#a6a6a6", "#7d7d7d", "#5c5c5c", "#444444", "#303030"]),
-    "claro": dict(FG="#0a0a0a", BG="#f3f3f3", LINEA="#d6d6d6", VACIO="#e2e2e2", GRIS="#555555", TENUE="#9b9b9b", ACENTO="#0a0a0a", MEDIO="#707070",
-                  R_IZQ="#3a3a3a", R_DER="#6a6a6a", SUELO="#e6e6e6", SUELO_L="#d2d2d2",
-                  ESCALA=["#0a0a0a", "#3a3a3a", "#5e5e5e", "#858585", "#a6a6a6", "#c0c0c0", "#d4d4d4"]),
-}
+"""Genera las piezas del perfil (SVG animados) en dos temas y dos idiomas, y los README.
+Uso: python scripts/build.py     (solo biblioteca estándar + scripts/pixel.py, que usa numpy)"""
+import json, math, datetime, html, random, os, sys
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(ROOT, "scripts"))
+MONO = "ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,'DejaVu Sans Mono',monospace"
+SANS = "Inter,'Segoe UI',-apple-system,Helvetica,Arial,sans-serif"
+DISP = "'Arial Black','Segoe UI Black',Inter,sans-serif"
+W = 1214; esc = html.escape
+IC = json.load(open(os.path.join(ROOT, "data", "iconos.json")))
+ACT = json.load(open(os.path.join(ROOT, "data", "actividad.json")))
+TEMAS = {"oscuro": dict(FG="#f2f2f2", BG="#08080a", GR="#9a9a9a", TE="#5c5c5c", LI="#2a2a2c", PAN="#111113", BORDE="#4a4a4e", BARRA="#77777a", CERO="#17171a", LUZ="#fff", SUBINV="#3a3a3c", OSC=1),
+         "claro": dict(FG="#0d0d0f", BG="#ffffff", GR="#55555a", TE="#9c9ca2", LI="#dcdce0", PAN="#f3f3f5", BORDE="#bcbcc2", BARRA="#a4a4aa", CERO="#ececef", LUZ="#000", SUBINV="#c8c8cc", OSC=0)}
 TEXTOS = {
-    "es": dict(
-        rol="ANALISTA Y DESARROLLADOR DE SOFTWARE", frases=["Automatizo lo repetitivo.", "Construyo apps web y móviles.", "Convierto datos en decisiones."],
-        auto="AUTOMATIZACIÓN", sobre="SOBRE MÍ",
-        sobre_txt=[[("Tecnólogo en ", 0), ("Análisis y Desarrollo de Software", 1), (". Construyo aplicaciones", 0)],
-                   [("web y móviles de punta a punta, y automatizo procesos para que el", 0)], [("trabajo repetitivo lo haga el sistema.", 0)], None,
-                   [("Hoy gestiono la plataforma educativa ", 0), ("Prizma", 1), (" en la Corporación", 0)],
-                   [("Universitaria Americana, donde automaticé el cargue de cursos con ", 0), ("n8n", 1), (".", 0)], None,
-                   [("Me interesan la ", 0), ("IA que corre en local", 1), (", las ", 0), ("apps en tiempo real", 1)], [("y los ", 0), ("flujos de automatización", 1), (".", 0)]],
-        sobre_alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo aplicaciones web y móviles de punta a punta y automatizo procesos. Gestiono la plataforma educativa Prizma en la Corporación Universitaria Americana, donde automaticé el cargue de cursos con n8n. Me interesan la IA que corre en local, las apps en tiempo real y los flujos de automatización.",
-        commits=("COMMITS", "en {n} proyectos, último año"), dias=("DÍAS ACTIVOS", "con al menos un commit"), racha=("MEJOR RACHA", "días seguidos"), hora=("HORA PICO", "cuando más programo"),
-        hago=[("DESARROLLO", "Web y móvil de punta a punta", "Interfaces, APIs y bases de datos: de la idea a la app funcionando."),
-              ("AUTOMATIZACIÓN", "Que lo repetitivo lo haga el sistema", "Flujos con n8n y Power Automate que ahorran horas de trabajo manual."),
-              ("DATOS", "Datos que se entienden", "Reportes y tableros en Power BI sobre bases SQL y NoSQL.")],
-        stack=["LENGUAJES", "FRONTEND Y MÓVIL", "BACKEND Y DATOS", "AUTOMATIZACIÓN E IA", "HERRAMIENTAS"],
-        ruta="TRAYECTORIA", hitos=[("SEP 2025 — HOY", "Gestor de Plataforma Prizma", "Corporación Universitaria Americana"),
-                                   ("ENE — JUL 2025", "Calidad de Proveedores", "Procaps"), ("2023 — 2025", "Tecnólogo ADSO", "SENA")],
-        gal="MI AÑO EN COMMITS", gal_n="Cada estrella es un día con commits; la galaxia gira.",
-        ciudad="CIUDAD DE COMMITS", ciudad_n="Cada edificio es un día; la altura, sus commits.",
-        calor="ACTIVIDAD · ÚLTIMO AÑO", calor_n="commits en {n} proyectos · datos al {f}", menos="menos", mas="más",
-        meses=["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"], dsem=["lun", "mié", "vie"],
-        reloj="HORA PICO", am="a. m.", pm="p. m.", leng="LENGUAJES · {n} PROYECTOS RECIENTES", otros="Otros",
-        semana="SEMANA", letras="LMXJVSD", finde="{p} % en fin de semana",
-        cv="HOJA DE VIDA", cv1="Descargar", cv2="PDF", cierre=("¿AUTOMATIZAMOS", "ALGO JUNTOS?"),
-        cierre_s="Cuéntame qué tarea repetitiva te quita tiempo.", escribe="Escríbeme",
-        consola="Animación de una terminal ejecutando un flujo de automatización paso a paso",
-        banner="Briand Castro, analista y desarrollador de software. Animación de un agujero negro con su disco de luz girando.",
-        flujo="Flujo de automatización animado. Soledad, Colombia.", otro=("EN", "README.en.md", "Read in English")),
-    "en": dict(
-        rol="SOFTWARE ANALYST & DEVELOPER", frases=["I automate the repetitive.", "I build web and mobile apps.", "I turn data into decisions."],
-        auto="AUTOMATION", sobre="ABOUT ME",
-        sobre_txt=[[("Technologist in ", 0), ("Software Analysis and Development", 1), (". I build web", 0)],
-                   [("and mobile apps end to end, and I automate processes so the", 0)], [("repetitive work is done by the system.", 0)], None,
-                   [("Today I manage the ", 0), ("Prizma", 1), (" learning platform at Corporación", 0)],
-                   [("Universitaria Americana, where I automated course loading with ", 0), ("n8n", 1), (".", 0)], None,
-                   [("I'm into ", 0), ("AI that runs locally", 1), (", ", 0), ("real-time apps", 1)], [("and ", 0), ("automation workflows", 1), (".", 0)]],
-        sobre_alt="About me: technologist in Software Analysis and Development. I build web and mobile apps end to end and automate processes. I manage the Prizma learning platform at Corporación Universitaria Americana, where I automated course loading with n8n. I'm into AI that runs locally, real-time apps and automation workflows.",
-        commits=("COMMITS", "in {n} projects, past year"), dias=("ACTIVE DAYS", "with at least one commit"), racha=("BEST STREAK", "days in a row"), hora=("PEAK HOUR", "when I code the most"),
-        hago=[("DEVELOPMENT", "Web and mobile, end to end", "Interfaces, APIs and databases: from the idea to a working app."),
-              ("AUTOMATION", "Let the system do the repetitive", "n8n and Power Automate workflows that save hours of manual work."),
-              ("DATA", "Data people understand", "Power BI reports and dashboards on SQL and NoSQL databases.")],
-        stack=["LANGUAGES", "FRONTEND & MOBILE", "BACKEND & DATA", "AUTOMATION & AI", "TOOLS"],
-        ruta="JOURNEY", hitos=[("SEP 2025 — NOW", "Prizma Platform Manager", "Corporación Universitaria Americana"),
-                               ("JAN — JUL 2025", "Supplier Quality", "Procaps"), ("2023 — 2025", "ADSO Technologist", "SENA")],
-        gal="MY YEAR IN COMMITS", gal_n="Each star is a day with commits; the galaxy spins.",
-        ciudad="COMMIT CITY", ciudad_n="Each building is a day; its height, the commits.",
-        calor="ACTIVITY · PAST YEAR", calor_n="commits in {n} projects · data as of {f}", menos="less", mas="more",
-        meses=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], dsem=["Mon", "Wed", "Fri"],
-        reloj="PEAK HOUR", am="AM", pm="PM", leng="LANGUAGES · {n} RECENT PROJECTS", otros="Other",
-        semana="WEEK", letras="MTWTFSS", finde="{p}% on weekends",
-        cv="RÉSUMÉ", cv1="Download", cv2="PDF", cierre=("LET'S AUTOMATE", "SOMETHING?"),
-        cierre_s="Tell me which repetitive task eats your time.", escribe="Email me",
-        consola="Animated terminal running an automation workflow step by step",
-        banner="Briand Castro, software analyst and developer. Animation of a black hole with its spinning disk of light.",
-        flujo="Animated automation workflow. Soledad, Colombia.", otro=("ES", "README.md", "Leer en español")),
-}
-TEMA, IDIOMA, OUT = "oscuro", "es", ""
-FG = BG = LINEA = VACIO = GRIS = TENUE = ACENTO = MEDIO = R_IZQ = R_DER = SUELO = SUELO_L = ""
-ESCALA = []
-T = {}
-
-
+ "es": dict(sobre="SOBRE MÍ", t1="CONSTRUYO Y", t2="AUTOMATIZO.",
+    par=[[("Tecnólogo en ", 0), ("Análisis y Desarrollo de Software", 1), (". Construyo", 0)], [("apps web y móviles de punta a punta y pongo al sistema a", 0)], [("hacer el trabajo repetitivo.", 0)], None,
+         [("Hoy gestiono la plataforma educativa ", 0), ("Prizma", 1), (" en la", 0)], [("Corporación ", 0), ("Universitaria Americana", 1), (".", 0)]],
+    hoy_t="EN LO QUE ANDO HOY", hoy_x=236, hoy=[("Priz", "IA", "Creación de inteligencia artificial institucional."), ("Control Tower", "AUTO", "Automatización y gestión de procesos.")],
+    vivo="EN VIVO · MODO CONCENTRACIÓN", stack="STACK · ASÍ FLUYE UN PROYECTO", grupos=["LENGUAJES", "FRONTEND Y MÓVIL", "BACKEND Y DATOS", "AUTOMATIZACIÓN E IA", "HERRAMIENTAS"],
+    act="ACTIVIDAD", c_en="commits en 5 proyectos", st=["días activos", "mejor racha", "en fin de semana"], sem="COMMITS POR SEMANA", pico="{n} en una semana", dia="DÍA A DÍA",
+    meses=["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"], hora="HORA DEL DÍA", h10="10 a. m.", dsem="DÍA DE LA SEMANA", letras="LMXJVSD",
+    nota="commits propios en 5 proyectos · datos al 10 nov 2026", ruta="TRAYECTORIA",
+    et=[("2023 — 2025", "Tecnólogo ADSO", "SENA", ["Análisis y desarrollo", "de software."]), ("ENE — JUL 2025", "Calidad de Proveedores", "Procaps", ["Gestión y reportes", "de calidad."]),
+        ("SEP 2025 — HOY", "Gestor de Plataforma Prizma", "Corporación Universitaria Americana", ["Automaticé el cargue de", "cursos con n8n."])],
+    paso="SIGUIENTE PASO", c1="¿AUTOMATIZAMOS", c2="ALGO JUNTOS?", cs1="Cuéntame qué tarea repetitiva te quita tiempo", cs2="y la convertimos en un flujo que corre solo.", abajo="Hoja de vida y contacto, aquí abajo ↓",
+    tareas="TAREAS", hecho="HECHO", b_cv="Descargar hoja de vida ↓", b_mail="Escríbeme →", b_idioma="English →",
+    alt=dict(banner="Briand Castro, analista y desarrollador de software. Animación de un agujero negro rodeado de lluvia de código.",
+        yo="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo apps web y móviles y automatizo el trabajo repetitivo. Hoy gestiono la plataforma Prizma en la Corporación Universitaria Americana y trabajo en Priz (inteligencia artificial institucional) y Control Tower (automatización y gestión de procesos). Soledad, Colombia.",
+        stack="Stack: C#, TypeScript, JavaScript, PHP, Python, SQL; React, Next.js, Tailwind, Ionic, Capacitor; .NET, Node.js, PostgreSQL, MySQL, MongoDB, Supabase, Firebase, Power BI; n8n, Power Automate, Ollama; Git, Docker, Unity, VS Code, SAP.",
+        actividad="Actividad del último año: 165 commits en 5 proyectos, 27 días activos, mejor racha de 4 días, 51 % en fin de semana, hora pico 10 a. m.",
+        ruta="Trayectoria: Tecnólogo ADSO en el SENA (2023-2025), Calidad de Proveedores en Procaps (enero a julio de 2025), Gestor de Plataforma Prizma en la Corporación Universitaria Americana (septiembre de 2025 a hoy).",
+        cierre="¿Automatizamos algo juntos? Cuéntame qué tarea repetitiva te quita tiempo.", cv="Descargar hoja de vida (PDF)", mail="Escríbeme por correo", idioma="Read in English"), otro="README.en.md", fn="README.md"),
+ "en": dict(sobre="ABOUT ME", t1="I BUILD AND", t2="AUTOMATE.",
+    par=[[("Technologist in ", 0), ("Software Analysis and Development", 1), (". I build", 0)], [("web and mobile apps end to end and make the system", 0)], [("do the repetitive work.", 0)], None,
+         [("Today I manage the ", 0), ("Prizma", 1), (" learning platform at", 0)], [("Corporación ", 0), ("Universitaria Americana", 1), (".", 0)]],
+    hoy_t="WHAT I'M ON TODAY", hoy_x=226, hoy=[("Priz", "AI", "Building institutional artificial intelligence."), ("Control Tower", "AUTO", "Process automation and management.")],
+    vivo="LIVE · FOCUS MODE", stack="STACK · HOW A PROJECT FLOWS", grupos=["LANGUAGES", "FRONTEND & MOBILE", "BACKEND & DATA", "AUTOMATION & AI", "TOOLS"],
+    act="ACTIVITY", c_en="commits across 5 projects", st=["active days", "best streak", "on weekends"], sem="COMMITS PER WEEK", pico="{n} in one week", dia="DAY BY DAY",
+    meses=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], hora="HOUR OF DAY", h10="10 a.m.", dsem="DAY OF WEEK", letras="MTWTFSS",
+    nota="own commits across 5 projects · data as of Nov 10, 2026", ruta="CAREER",
+    et=[("2023 — 2025", "Software Technologist", "SENA", ["Software analysis and", "development."]), ("JAN — JUL 2025", "Supplier Quality", "Procaps", ["Quality management", "and reporting."]),
+        ("SEP 2025 — NOW", "Prizma Platform Manager", "Corporación Universitaria Americana", ["Automated course uploads", "with n8n."])],
+    paso="NEXT STEP", c1="SHALL WE AUTOMATE", c2="SOMETHING?", cs1="Tell me which repetitive task eats your time", cs2="and we'll turn it into a flow that runs itself.", abajo="Résumé and contact, right below ↓",
+    tareas="TASKS", hecho="DONE", b_cv="Download résumé ↓", b_mail="Write to me →", b_idioma="Español →",
+    alt=dict(banner="Briand Castro, software analyst and developer. Animation of a black hole surrounded by falling code.",
+        yo="About me: technologist in Software Analysis and Development. I build web and mobile apps and automate repetitive work. Today I manage the Prizma platform at Corporación Universitaria Americana and work on Priz (institutional artificial intelligence) and Control Tower (process automation and management). Soledad, Colombia.",
+        stack="Stack: C#, TypeScript, JavaScript, PHP, Python, SQL; React, Next.js, Tailwind, Ionic, Capacitor; .NET, Node.js, PostgreSQL, MySQL, MongoDB, Supabase, Firebase, Power BI; n8n, Power Automate, Ollama; Git, Docker, Unity, VS Code, SAP.",
+        actividad="Activity over the last year: 165 commits across 5 projects, 27 active days, best streak of 4 days, 51% on weekends, peak hour 10 a.m.",
+        ruta="Career: Software Technologist at SENA (2023-2025), Supplier Quality at Procaps (January to July 2025), Prizma Platform Manager at Corporación Universitaria Americana (September 2025 to now).",
+        cierre="Shall we automate something? Tell me which repetitive task eats your time.", cv="Download résumé (PDF)", mail="Write me an email", idioma="Leer en español"), otro="README.md", fn="README.en.md")}
 def usar(tema, idioma):
-    global TEMA, IDIOMA, OUT, T
-    TEMA, IDIOMA, T = tema, idioma, TEXTOS[idioma]
-    globals().update(TEMAS[tema])
-    OUT = os.path.join(ROOT, "assets", tema, idioma)
-    os.makedirs(OUT, exist_ok=True)
+    global T, OUT
+    globals().update(TEMAS[tema]); T = TEXTOS[idioma]
+    OUT = os.path.join(ROOT, "assets", tema, idioma); os.makedirs(OUT, exist_ok=True)
+def guardar(fn, txt): open(os.path.join(OUT, fn), "w", encoding="utf-8").write(txt)
 
+def lluvia(w, h, seed, op=.5, paso=22, n=13, fs=13):
+    op = op if OSC else op * .45
+    """Lluvia de caracteres estilo Matrix: columnas que caen en bucle, cabeza brillante y cola que se apaga."""
+    r = random.Random(seed); ch = "01<>{}/=;$#*+01"; g = []
+    for i, x in enumerate(range(12, w, paso)):
+        if r.random() < .18: continue
+        d = r.uniform(5, 11); ret = -r.uniform(0, d); lh = fs + 3; alto = n * lh
+        ts = "".join(f'<tspan x="{x}" dy="{lh}" fill-opacity="{(j+1)/n*(1 if j==n-1 else .55):.2f}">{esc(r.choice(ch))}</tspan>' for j in range(n))
+        g.append(f'<text y="0" font-size="{fs}" fill="{LUZ}"><animateTransform attributeName="transform" type="translate" from="0 {-alto}" to="0 {h+20}" dur="{d:.1f}s" begin="{ret:.1f}s" repeatCount="indefinite"/>{ts}</text>')
+    return f'<g opacity="{op}" font-family="{MONO}">' + "".join(g) + '</g>'
 
-def save(name, W, H, label, body, style="", defs=""):
-    izq, der = margenes(name[:-4])
-    with open(os.path.join(OUT, name), "w", encoding="utf-8") as f:
-        f.write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W+izq+der:g} {H+V}" width="{W+izq+der:g}" height="{H+V}" role="img" aria-label="{e(label)}">'
-                f'<defs><clipPath id="clip"><rect width="{W}" height="{H}" rx="16"/></clipPath>{defs}</defs><style>{style}{REDUCE}</style>'
-                f'<g transform="translate({izq:g},0)">{body}</g></svg>')
+def base(H, seed, op=.5, ids="x"):
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}"><defs><clipPath id="cl{ids}"><rect width="{W}" height="{H}" rx="20"/></clipPath>'
+            f'<radialGradient id="vi{ids}" cx="50%" cy="50%" r="75%"><stop offset="0" stop-color="{BG}" stop-opacity=".8"/><stop offset=".7" stop-color="{BG}" stop-opacity=".5"/><stop offset="1" stop-color="{BG}" stop-opacity="0"/></radialGradient></defs>'
+            f'<g clip-path="url(#cl{ids})"><rect width="{W}" height="{H}" fill="{BG}"/>{lluvia(W, H, seed, op)}<rect width="{W}" height="{H}" fill="url(#vi{ids})"/>')
+def fin(H): return f'</g><rect x=".75" y=".75" width="{W-1.5}" height="{H-1.5}" rx="20" fill="none" stroke="{LI}" stroke-width="1.5"/></svg>'
+def rot(x, y, t, n=None):
+    s = f'<rect x="{x}" y="{y-10}" width="9" height="9" fill="{FG}"/><text x="{x+20}" y="{y}" font-family="{MONO}" font-size="13" fill="{GR}" letter-spacing="3.5">{t}</text>'
+    return s
+def icono(slug, x, y, s, fill=None):
+    fill = fill or FG
+    if slug in IC: return f'<path transform="translate({x} {y}) scale({s/24})" fill="{fill}" d="{IC[slug]["p"]}"/>'
+    return f'<rect x="{x}" y="{y}" width="{s}" height="{s}" rx="{s*.2}" fill="none" stroke="{fill}" stroke-width="1.6"/><text x="{x+s/2}" y="{y+s*.66}" text-anchor="middle" font-family="{SANS}" font-weight="800" font-size="{s*.42}" fill="{fill}">{slug}</text>'
 
+# ---------------- 1. sobre mí + escena ----------------
+def escena(ox, oy):
+    s = [f'<g transform="translate({ox} {oy})">']
+    s.append('<defs><radialGradient id="gl" cx="50%" cy="45%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'
+             '<linearGradient id="pan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1b1e"/><stop offset="1" stop-color="#0c0c0e"/></linearGradient></defs>')
+    s.append('<ellipse cx="250" cy="150" rx="330" ry="210" fill="url(#gl)"/>')
+    # símbolos que suben
+    for i, (x, t) in enumerate([(70, "{ }"), (150, "</>"), (215, "=>"), (300, "✓"), (365, "SQL"), (430, "API")]):
+        s.append(f'<text x="{x}" y="46" font-family="{MONO}" font-size="13" font-weight="700" fill="{FG}" text-anchor="middle" opacity="0">{esc(t)}'
+                 f'<animate attributeName="opacity" values="0;.9;0" dur="4s" begin="{-i*.67:.2f}s" repeatCount="indefinite"/><animate attributeName="y" values="52;8" dur="4s" begin="{-i*.67:.2f}s" repeatCount="indefinite"/></text>')
+    # monitores
+    for mx in (52, 262):
+        s.append(f'<rect x="{mx+82}" y="178" width="22" height="40" fill="#1c1c1f"/><rect x="{mx+56}" y="214" width="74" height="7" rx="3" fill="#232326"/>')
+        s.append(f'<rect x="{mx}" y="60" width="186" height="120" rx="9" fill="url(#pan)" stroke="#7a7a7a" stroke-width="2"/>')
+    # código (monitor izquierdo)
+    anchos = [70, 112, 92, 130, 60, 104, 84]
+    for i, a in enumerate(anchos):
+        y = 76 + i * 13.5; x = 66 + (0, 12, 12, 24, 24, 12, 0)[i]
+        s.append(f'<rect x="{x}" y="{y}" height="5" rx="2.5" width="{a}" fill="{FG if i in (0,3) else GR}" opacity=".9"><animate attributeName="width" values="0;{a};{a};{a}" keyTimes="0;.12;.9;1" dur="7s" begin="{-7+i*.7:.2f}s" repeatCount="indefinite"/></rect>')
+    s.append(f'<rect x="66" y="166" width="7" height="8" fill="{FG}"><animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/></rect>')
+    # flujo (monitor derecho)
+    nod = [(282, 92), (336, 122), (398, 92)]
+    s.append(f'<path d="M298 100 C318 100 316 130 336 130 M352 130 C376 130 374 100 398 100" stroke="{GR}" stroke-width="1.6" fill="none" stroke-dasharray="3 4"><animate attributeName="stroke-dashoffset" values="14;0" dur=".9s" repeatCount="indefinite"/></path>')
+    for i, (x, y) in enumerate(nod):
+        s.append(f'<rect x="{x}" y="{y}" width="16" height="16" rx="4" fill="{FG}"><animate attributeName="opacity" values=".35;1;.35" dur="2.4s" begin="{-2.4+i*.8:.1f}s" repeatCount="indefinite"/></rect>')
+    s.append(f'<circle cx="423" cy="100" r="7" fill="none" stroke="{FG}" stroke-width="1.6"/><path d="M419.5 100l2.6 2.6 4.6-5" stroke="{FG}" stroke-width="1.6" fill="none"/>')
+    for i, a in enumerate([120, 86, 104]):
+        s.append(f'<rect x="282" y="{150+i*10}" width="{a}" height="4" rx="2" fill="{TE}"/>')
+    # escritorio
+    s.append('<rect x="-6" y="221" width="512" height="11" rx="3" fill="#2b2b2f"/><rect x="-6" y="232" width="512" height="3" fill="#000" opacity=".5"/><rect x="14" y="235" width="10" height="150" fill="#1b1b1e"/><rect x="476" y="235" width="10" height="150" fill="#1b1b1e"/>')
+    # taza con vapor y planta
+    s.append(f'<rect x="444" y="198" width="24" height="23" rx="4" fill="#d8d8d8"/><path d="M468 203h5a5 5 0 0 1 0 12h-5" stroke="#d8d8d8" stroke-width="3" fill="none"/>')
+    for i in range(2):
+        s.append(f'<path d="M{451+i*9} 192c-4-6 4-9 0-16" stroke="{GR}" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".6"><animate attributeName="opacity" values="0;.8;0" dur="3s" begin="{-i*1.5}s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" values="0 6;0 -8" dur="3s" begin="{-i*1.5}s" repeatCount="indefinite"/></path>')
+    s.append('<path d="M18 221l4-22h22l4 22z" fill="#3a3a3e"/><path d="M33 199c-2-22-16-28-22-30 2 14 8 26 22 30zm0 0c0-26 10-36 20-40 0 16-6 32-20 40zm0 0c-1-16 3-34 2-44" fill="none" stroke="#bdbdbd" stroke-width="2.2" stroke-linecap="round"/>')
+    # persona de espaldas
+    s.append('<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -1.6;0 0" dur="3.6s" repeatCount="indefinite"/>'
+             '<path d="M128 392C128 300 170 258 250 258S372 300 372 392Z" fill="#17171a" stroke="#8c8c8c" stroke-width="2"/>'
+             '<ellipse cx="250" cy="262" rx="58" ry="22" fill="#202024" stroke="#8c8c8c" stroke-width="2"/>'
+             '<circle cx="250" cy="212" r="40" fill="#1a1a1d" stroke="#a0a0a0" stroke-width="2"/>'
+             '<path d="M214 196c6-22 22-30 36-30s30 8 36 30" fill="none" stroke="#2c2c30" stroke-width="10" stroke-linecap="round"/>'
+             f'<path d="M208 210A42 44 0 0 1 292 210" fill="none" stroke="{FG}" stroke-width="6" stroke-linecap="round"/>'
+             f'<rect x="199" y="200" width="15" height="34" rx="7" fill="{FG}"/><rect x="286" y="200" width="15" height="34" rx="7" fill="{FG}"/></g>')
+    # silla
+    s.append('<rect x="176" y="292" width="148" height="110" rx="26" fill="#0c0c0e" stroke="#5a5a5a" stroke-width="2"/>' + "".join(f'<path d="M196 {312+i*16}h108" stroke="#2a2a2e" stroke-width="2"/>' for i in range(5)))
+    s.append('</g>'); return "".join(s)
 
-def esquinas(W, H, color, op=.55, d=14, l=12):
-    """Marcas en las cuatro esquinas, como las de un visor."""
-    p = "".join(f"M{x} {y+sy*l} V{y} H{x+sx*l} " for x, y, sx, sy in ((d, d, 1, 1), (W - d, d, -1, 1), (d, H - d, 1, -1), (W - d, H - d, -1, -1)))
-    return f'<path d="{p}" fill="none" stroke="{color}" stroke-opacity="{op}" stroke-width="1.6" stroke-linecap="round"/>'
+def yo():
+    H = 560; s = [base(H, 11, .6, "a")]
+    s.append(rot(48, 62, T["sobre"]))
+    s.append(f'<text font-family="{DISP}" font-weight="900" font-size="40" fill="{FG}"><tspan x="46" y="122">{T["t1"]}</tspan><tspan x="46" y="166">{T["t2"]}</tspan></text>')
+    par = T["par"]
+    y = 212
+    for l in par:
+        if l is None: y += 12; continue
+        s.append(f'<text x="48" y="{y}" font-family="{SANS}" font-size="17.5">' + "".join(f'<tspan fill="{FG if b else GR}" font-weight="{700 if b else 400}">{esc(t)}</tspan>' for t, b in l) + '</text>'); y += 27
+    y += 22
+    s.append(f'<text x="48" y="{y}" font-family="{MONO}" font-size="12" fill="{GR}" letter-spacing="3">{T["hoy_t"]}</text><path d="M{T["hoy_x"]} {y-4}H590" stroke="{LI}" stroke-width="1.5"/>'); y += 38
+    hoy = T["hoy"]
+    for i, (n, et, d) in enumerate(hoy):
+        s.append(f'<circle cx="54" cy="{y-6}" r="4" fill="{FG}"><animate attributeName="opacity" values="1;.25;1" dur="2.4s" begin="{-i*.6}s" repeatCount="indefinite"/></circle>'
+                 f'<text x="70" y="{y}" font-family="{SANS}" font-size="16.5" font-weight="800" fill="{FG}">{n}</text>'
+                 f'<rect x="{590-len(et)*8.4-18:.0f}" y="{y-16}" width="{len(et)*8.4+18:.0f}" height="21" rx="6" fill="none" stroke="{TE}"/><text x="{590-(len(et)*8.4+18)/2:.0f}" y="{y-1}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{GR}" letter-spacing="1">{et}</text>'
+                 f'<text x="70" y="{y+20}" font-family="{SANS}" font-size="13.5" fill="{GR}">{esc(d)}</text>'); y += 52
+    s.append(f'<g font-family="{MONO}" font-size="12.5"><rect x="640" y="{H-64}" width="176" height="30" rx="15" fill="none" stroke="{TE}"/><circle cx="656" cy="{H-49}" r="4" fill="{FG}"><animate attributeName="opacity" values="1;.2;1" dur="1.6s" repeatCount="indefinite"/></circle><text x="668" y="{H-44.5}" fill="{FG}">Soledad, Colombia</text></g>')
+    import pixel
+    sx, sy = 640, 92
+    s.append(f'<defs><clipPath id="pxc"><rect x="{sx}" y="{sy}" width="528" height="360" rx="14"/></clipPath></defs><g clip-path="url(#pxc)"><g transform="translate({sx} {sy})">{pixel.svg(3)}</g></g>'
+             f'<rect x="{sx}" y="{sy}" width="528" height="360" rx="14" fill="none" stroke="{BORDE}" stroke-width="1.5"/>')
+    s.append(f'<text x="{sx+528}" y="{sy+386}" text-anchor="end" font-family="{MONO}" font-size="11.5" fill="{TE}" letter-spacing="2">{T["vivo"]}</text><circle cx="{sx+528-len(T["vivo"])*8.95-16:.0f}" cy="{sy+382}" r="3.5" fill="{FG}"><animate attributeName="opacity" values="1;.15;1" dur="1.4s" repeatCount="indefinite"/></circle>')
+    s.append(fin(H)); guardar("yo.svg", "".join(s))
 
+# ---------------- 2. stack como flujo de automatización ----------------
+def stack():
+    H = 470; s = [base(H, 23, .42, "b")]
+    s.append(f'<defs><pattern id="pt" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1.2" cy="1.2" r="1.1" fill="{LUZ}" opacity=".1"/></pattern></defs><rect width="{W}" height="{H}" fill="url(#pt)"/>')
+    s.append(rot(48, 62, T["stack"]))
+    P = 59
+    grupos = [("LENGUAJES", [("C#", "C#"), ("typescript", "TypeScript"), ("javascript", "JavaScript"), ("php", "PHP"), ("python", "Python"), ("SQL", "SQL")]),
+              ("FRONTEND Y MÓVIL", [("react", "React"), ("nextdotjs", "Next.js"), ("tailwindcss", "Tailwind"), ("ionic", "Ionic"), ("capacitor", "Capacitor")]),
+              ("BACKEND Y DATOS", [("dotnet", ".NET"), ("nodedotjs", "Node.js"), ("postgresql", "Postgres"), ("mysql", "MySQL"), ("mongodb", "MongoDB"), ("supabase", "Supabase"), ("firebase", "Firebase"), ("BI", "Power BI")]),
+              ("AUTOMATIZACIÓN E IA", [("n8n", "n8n"), ("PA", "Automate"), ("ollama", "Ollama")]),
+              ("HERRAMIENTAS", [("git", "Git"), ("docker", "Docker"), ("unity", "Unity"), ("VS", "VS Code"), ("sap", "SAP")])]
+    grupos = [(T["grupos"][i], g[1]) for i, g in enumerate(grupos)]
+    anc = lambda g: max(len(g[1]) * P + 26, len(g[0]) * 9.6 + 84)
+    NH = 132
+    # posiciones: fila 1 (inicio + 2 nodos), fila 2 (3 nodos)
+    y1, y2 = 100, 296
+    x = 48; pos = []
+    ini = (x, y1 + 36, 118, 60); x += 118 + 56
+    for g in grupos[:2]: pos.append((x, y1)); x += anc(g) + 56
+    f1fin = x - 56
+    tot2 = sum(anc(g) for g in grupos[2:]) + 2 * 46; x = (W - tot2) / 2
+    for g in grupos[2:]: pos.append((x, y2)); x += anc(g) + 46
+    cables = []
+    cables.append(f"M{ini[0]+ini[2]} {ini[1]+30} H{pos[0][0]}")
+    cables.append(f"M{pos[0][0]+anc(grupos[0])} {y1+NH/2} H{pos[1][0]}")
+    xa = pos[1][0] + anc(grupos[1]); xb = pos[2][0]
+    cables.append(f"M{xa} {y1+NH/2} C{xa+150} {y1+NH/2} {xa+150} {y1+NH+32} {xa-40} {y1+NH+32} H{xb+22} C{xb-34} {y1+NH+32} {xb-34} {y2+NH/2} {xb} {y2+NH/2}")
+    cables.append(f"M{pos[2][0]+anc(grupos[2])} {y2+NH/2} H{pos[3][0]}")
+    cables.append(f"M{pos[3][0]+anc(grupos[3])} {y2+NH/2} H{pos[4][0]}")
+    for i, c in enumerate(cables):
+        s.append(f'<path d="{c}" fill="none" stroke="{TE}" stroke-width="2"/><path d="{c}" fill="none" stroke="{FG}" stroke-width="2" stroke-dasharray="5 9" opacity=".8"><animate attributeName="stroke-dashoffset" values="28;0" dur="1s" repeatCount="indefinite"/></path>')
+        d = 5 if i == 2 else 1.8
+        s.append(f'<circle r="5" fill="{FG}"><animateMotion dur="{d}s" repeatCount="indefinite" path="{c}"/></circle><circle r="10" fill="{FG}" opacity=".18"><animateMotion dur="{d}s" repeatCount="indefinite" path="{c}"/></circle>')
+    # nodo inicio
+    x, y, w, h = ini
+    s.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="30" fill="{FG}"/><path d="M{x+26} {y+19}l16 11-16 11z" fill="{BG}"/><text x="{x+54}" y="{y+35}" font-family="{MONO}" font-weight="700" font-size="14" fill="{BG}">IDEA</text>')
+    for k, (g, (x, y)) in enumerate(zip(grupos, pos)):
+        w = anc(g)
+        s.append(f'<rect x="{x}" y="{y}" width="{w}" height="{NH}" rx="16" fill="{PAN}" stroke="{BORDE}" stroke-width="1.5"/>'
+                 f'<rect x="{x}" y="{y}" width="{w}" height="{NH}" rx="16" fill="none" stroke="{FG}" stroke-width="2" opacity="0"><animate attributeName="opacity" values="0;.9;0;0" keyTimes="0;.12;.4;1" dur="6s" begin="{-6+k*1.2:.1f}s" repeatCount="indefinite"/></rect>'
+                 f'<text x="{x+18}" y="{y+27}" font-family="{MONO}" font-size="11.5" fill="{GR}" letter-spacing="2.5">{k+1:02d} · {esc(g[0])}</text><path d="M{x+1} {y+40}h{w-2}" stroke="{LI}" stroke-width="1.5"/>'
+                 f'<circle cx="{x}" cy="{y+NH/2}" r="6" fill="{BG}" stroke="{FG}" stroke-width="2"/><circle cx="{x+w}" cy="{y+NH/2}" r="6" fill="{BG}" stroke="{FG}" stroke-width="2"/>')
+        for j, (slug, nom) in enumerate(g[1]):
+            cx = x + (w - len(g[1]) * P) / 2 + j * P + P / 2
+            s.append(icono(slug, cx - 15, y + 54, 30) + f'<text x="{cx}" y="{y+108}" text-anchor="middle" font-family="{SANS}" font-size="11" fill="{GR}">{nom}</text>')
+    # fin
+    xe = pos[4][0] + anc(grupos[4]) + 6
+    s.append(fin(H)); guardar("stack.svg", "".join(s))
 
-def fondo(W, H, tono="base", malla=False):
-    """Tarjeta. base: la del tema · medio: gris · inverso: blanca en tema oscuro y negra en tema claro.
+# ---------------- 3. actividad ----------------
+def actividad():
+    H = 470; s = [base(H, 37, .42, "c")]
+    dias = ACT["dias"]; finf = datetime.date.fromisoformat(ACT["hasta"]); ini = finf - datetime.timedelta(days=52 * 7 + finf.weekday())
+    sem = [sum(dias.get((ini + datetime.timedelta(days=c * 7 + r)).isoformat(), 0) for r in range(7)) for c in range(53)]
+    meses = T["meses"]
+    s.append(rot(48, 62, T["act"]))
+    s.append(f'<text x="44" y="150" font-family="{DISP}" font-weight="900" font-size="84" fill="{FG}">165</text><text x="48" y="178" font-family="{MONO}" font-size="13" fill="{GR}">{T["c_en"]}</text>')
+    for i, (v, e) in enumerate([("27", T["st"][0]), ("4", T["st"][1]), ("51 %", T["st"][2])]):
+        y = 236 + i * 70
+        s.append(f'<path d="M48 {y-34}h170" stroke="{LI}" stroke-width="1.5"/><text x="48" y="{y}" font-family="{DISP}" font-weight="900" font-size="30" fill="{FG}">{v}</text><text x="48" y="{y+19}" font-family="{MONO}" font-size="12" fill="{GR}">{e}</text>')
+    # curva semanal
+    X0, X1, Y0, Y1 = 312, 846, 252, 96; mx = max(sem)
+    px = lambda c: X0 + (X1 - X0) * c / 52; py = lambda v: Y0 - (Y0 - Y1) * v / mx
+    pts = [(px(c), py(v)) for c, v in enumerate(sem)]
+    d = f"M{pts[0][0]:.1f} {pts[0][1]:.1f}"
+    for (xa, ya), (xb, yb) in zip(pts, pts[1:]):
+        m = (xa + xb) / 2; d += f" C{m:.1f} {ya:.1f} {m:.1f} {yb:.1f} {xb:.1f} {yb:.1f}"
+    s.append(f'<defs><linearGradient id="ar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{LUZ}" stop-opacity=".3"/><stop offset="1" stop-color="{LUZ}" stop-opacity="0"/></linearGradient><filter id="bl" x="-5%" y="-30%" width="110%" height="160%"><feGaussianBlur stdDeviation="5"/></filter></defs>')
+    s.append(f'<text x="{X0}" y="62" font-family="{MONO}" font-size="12" fill="{GR}" letter-spacing="2">{T["sem"]}</text>')
+    for v in (0, 30, 60):
+        s.append(f'<path d="M{X0} {py(v):.1f}H{X1}" stroke="{LI}" stroke-width="1"/><text x="{X0-8}" y="{py(v)+4:.1f}" text-anchor="end" font-family="{MONO}" font-size="10.5" fill="{TE}">{v}</text>')
+    s.append(f'<path d="{d} L{X1} {Y0} L{X0} {Y0}Z" fill="url(#ar)"/><path d="{d}" fill="none" stroke="{LUZ}" stroke-width="5" opacity="{.5 if OSC else .18}" filter="url(#bl)"/><path d="{d}" fill="none" stroke="{FG}" stroke-width="2" stroke-linejoin="round"/>')
+    s.append(f'<circle r="4.5" fill="{FG}" stroke="{BG}" stroke-width="2"><animateMotion dur="8s" repeatCount="indefinite" path="{d}"/></circle>')
+    cm = sem.index(mx); s.append(f'<circle cx="{px(cm):.1f}" cy="{py(mx):.1f}" r="5" fill="{FG}" stroke="{BG}" stroke-width="2"/><text x="{px(cm)-12:.1f}" y="{py(mx)+4:.1f}" text-anchor="end" font-family="{MONO}" font-size="12" fill="{FG}">{T["pico"].format(n=mx)}</text>')
+    # mapa de calor
+    cw = (X1 - X0) / 53; gy = 300
+    s.append(f'<text x="{X0}" y="{gy-12}" font-family="{MONO}" font-size="12" fill="{GR}" letter-spacing="2">{T["dia"]}</text>')
+    for c in range(53):
+        f0 = ini + datetime.timedelta(days=c * 7)
+        if f0.day <= 7: s.append(f'<text x="{X0+c*cw:.1f}" y="{gy+7*cw+16:.0f}" font-family="{MONO}" font-size="10.5" fill="{TE}">{meses[f0.month-1]}</text>')
+        for r in range(7):
+            f = f0 + datetime.timedelta(days=r)
+            if f > finf: continue
+            n = dias.get(f.isoformat(), 0)
+            k = min(1, n / 20) ** .55; col = CERO if n == 0 else "#%02x%02x%02x" % ((int(70 + 172 * k) if OSC else int(170 - 157 * k),) * 3)
+            s.append(f'<rect x="{X0+c*cw:.1f}" y="{gy+r*cw:.1f}" width="{cw-2:.1f}" height="{cw-2:.1f}" rx="2" fill="{col}"/>')
+    # derecha: por hora y por día
+    RX = 900; RW = W - 48 - RX
+    s.append(f'<path d="M{RX-27} 48V{H-48}" stroke="{LI}" stroke-width="1.5"/><text x="{RX}" y="62" font-family="{MONO}" font-size="12" fill="{GR}" letter-spacing="2">{T["hora"]}</text>')
+    hs = ACT["horas"]; hm = max(hs); bw = RW / 24; by = 212
+    for i, v in enumerate(hs):
+        hh = 2 + 104 * v / hm
+        s.append(f'<rect x="{RX+i*bw+1:.1f}" y="{by-hh:.1f}" width="{bw-3:.1f}" height="{hh:.1f}" rx="2" fill="{FG if v == hm else BARRA}"/>')
+    s.append(f'<text x="{RX+hs.index(hm)*bw+bw/2:.1f}" y="{by-112}" text-anchor="middle" font-family="{MONO}" font-size="12" font-weight="700" fill="{FG}">{T["h10"]}</text>')
+    for hlab in (0, 6, 12, 18):
+        s.append(f'<text x="{RX+hlab*bw+1:.1f}" y="{by+16}" font-family="{MONO}" font-size="10.5" fill="{TE}">{hlab:02d}h</text>')
+    s.append(f'<text x="{RX}" y="286" font-family="{MONO}" font-size="12" fill="{GR}" letter-spacing="2">{T["dsem"]}</text>')
+    ws = ACT["semana"]; wm = max(ws); bw = RW / 7; by = 396
+    for i, v in enumerate(ws):
+        hh = 96 * v / wm
+        s.append(f'<rect x="{RX+i*bw+3:.1f}" y="{by-hh:.1f}" width="{bw-8:.1f}" height="{hh:.1f}" rx="3" fill="{FG if i >= 5 else BARRA}"/><text x="{RX+i*bw+bw/2-1:.1f}" y="{by+17}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{GR}">{T["letras"][i]}</text>'
+                 f'<text x="{RX+i*bw+bw/2-1:.1f}" y="{by-hh-6:.1f}" text-anchor="middle" font-family="{MONO}" font-size="10.5" fill="{GR}">{v}</text>')
+    s.append(f'<text x="{X0}" y="{H-30}" font-family="{MONO}" font-size="10.5" fill="{TE}">{T["nota"]}</text>')
+    s.append(fin(H)); guardar("actividad.svg", "".join(s))
 
-    Lleva degradado, un brillo en la esquina, borde que se apaga hacia abajo, marcas en las esquinas
-    y un destello que recorre el borde.
-    """
-    oscuro = TEMA == "oscuro"
-    if tono == "medio":
-        c0, c1, tinta, luz = "#7d7d7d", "#585858", BLANCO, .22
-    elif tono == "inverso":
-        c0, c1, tinta, luz = ("#ffffff", "#dcdcdc", NEGRO, .0) if oscuro else ("#1c1c1c", "#060606", BLANCO, .1)
-    else:
-        c0, c1, tinta, luz = ("#171717", "#090909", BLANCO, .075) if oscuro else ("#ffffff", "#ececec", NEGRO, .0)
-    defs = (f'<defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{c0}"/><stop offset="1" stop-color="{c1}"/></linearGradient>'
-            f'<radialGradient id="tl" cx="0" cy="0" r="1"><stop offset="0" stop-color="#fff" stop-opacity="{luz}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'
-            f'<linearGradient id="tb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{tinta}" stop-opacity=".5"/><stop offset=".5" stop-color="{tinta}" stop-opacity=".14"/><stop offset="1" stop-color="{tinta}" stop-opacity=".06"/></linearGradient>'
-            f'<pattern id="malla" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.1" fill="{tinta}" fill-opacity=".16"/></pattern>'
-            f'<linearGradient id="tf" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>'
-            f'<mask id="tm"><rect width="{W}" height="{H}" fill="url(#tf)"/></mask></defs>')
-    m = f'<rect width="{W}" height="{H}" fill="url(#malla)" mask="url(#tm)"/>' if (malla or tono == "base") else ""
-    return (f'{defs}<g clip-path="url(#clip)"><rect width="{W}" height="{H}" fill="url(#tg)"/>{m}<rect width="{W}" height="{H}" fill="url(#tl)"/></g>'
-            f'<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="15" fill="none" stroke="url(#tb)" stroke-width="1.5"/>'
-            f'<rect class="viaje" x="1" y="1" width="{W-2}" height="{H-2}" rx="15" fill="none" stroke="{tinta}" stroke-opacity=".9" stroke-width="1.6" stroke-linecap="round" pathLength="1000" stroke-dasharray="46 954"/>'
-            f'{esquinas(W, H, tinta)}')
-
-
-def rotulo(x, y, text, color=None, punto=None):
-    return (f'<rect x="{x}" y="{y-11}" width="11" height="11" fill="{punto or ACENTO}"/>'
-            f'<text x="{x+22}" y="{y}" font-family="{MONO}" font-size="13" font-weight="700" letter-spacing="3.5" fill="{color or FG}">{e(text)}</text>')
-
-
-def ancho(text, size, f=.7):
-    """Ancho fijo para titulares, para que no dependa de la tipografía del visitante."""
-    return round(len(text) * size * f)
-
-
-def hora12(h):
-    return f"{(h % 12) or 12} {T['am'] if h < 12 else T['pm']}"
-
-
-def cargar(nombre):
-    return json.load(open(os.path.join(ROOT, "data", nombre), encoding="utf-8"))
-
-
-# ───────────── nombre ─────────────
-# ───────────── flujo de automatización ─────────────
-# ───────────── sobre mí ─────────────
-def sobre():
-    W, H = W2, 340
-    y, txt = 116, ""
-    for l in T["sobre_txt"]:
-        if l is None:
-            y += 16
-            continue
-        txt += f'<text x="48" y="{y}" font-family="{SANS}" font-size="19" fill="{GRIS}">' + "".join(
-            f'<tspan fill="{FG}" font-weight="700">{e(t)}</tspan>' if b else e(t) for t, b in l) + "</text>"
-        y += 29
-    body = f'{fondo(W, H)}{rotulo(48, 62, T["sobre"])}<rect class="b" x="48" y="78" width="60" height="3" fill="{ACENTO}"/>{txt}'
-    save("sobre.svg", W, H, T["sobre_alt"], body, ".b{animation:b 4s ease-in-out infinite;transform-origin:48px 0}@keyframes b{50%{transform:scaleX(4)}}")
-
-
-# ───────────── cifras ─────────────
-def cifra(fn, tono, valor, etiqueta, nota, tam=104):
-    W, H = W1, 220
-    tinta, sec, punto, num = {"inverso": (BG, TENUE if TEMA == "oscuro" else "#bdbdbd", MEDIO, BG), "base": (FG, GRIS, ACENTO, FG),
-                              "medio": (BLANCO, NEGRO, NEGRO, BLANCO)}[tono]
-    if tono == "inverso" and TEMA == "oscuro":
-        sec = "#555555"
-    body = (f'{fondo(W, H, tono)}{rotulo(28, 44, etiqueta, tinta, punto)}'
-            f'<text class="v" x="24" y="156" font-family="{DISPLAY}" font-size="{tam}" font-weight="900" fill="{num}" textLength="{round(tam*.58*len(valor))+20}" lengthAdjust="spacingAndGlyphs">{e(valor)}</text>'
-            f'<text x="28" y="192" font-family="{SANS}" font-size="15" font-weight="600" fill="{sec}">{e(nota)}</text>')
-    save(fn, W, H, f"{etiqueta}: {valor}. {nota}", body, ".v{animation:v 5s ease-in-out infinite}@keyframes v{50%{opacity:.82}}")
-
-
-# ───────────── qué hago ─────────────
-def hago():
-    W, H = W3, 366
-    body = fondo(W, H)
-    for i, (tag, tit, desc) in enumerate(T["hago"]):
-        y = i * 122
-        body += ((f'<line x1="48" x2="{W-48}" y1="{y}" y2="{y}" stroke="{LINEA}"/>' if i else "")
-                 + f'<g clip-path="url(#clip)"><rect class="s s{i}" x="0" y="{y+1}" width="8" height="120" fill="{ACENTO}"/></g>'
-                 f'<text x="48" y="{y+80}" font-family="{DISPLAY}" font-size="56" font-weight="900" fill="none" stroke="{TENUE}" stroke-width="1.6" textLength="84" lengthAdjust="spacingAndGlyphs">0{i+1}</text>'
-                 f'<text x="176" y="{y+52}" font-family="{MONO}" font-size="12.5" font-weight="700" letter-spacing="3" fill="{ACENTO}">{tag}</text>'
-                 f'<text x="176" y="{y+86}" font-family="{SANS}" font-size="25" font-weight="800" fill="{FG}">{e(tit)}</text>'
-                 f'<text x="640" y="{y+68}" font-family="{SANS}" font-size="14.5" fill="{GRIS}">{e(desc)}</text>'
-                 f'<path class="fl s{i}" d="M{W-84} {y+63} h26 m-10 -10 l10 10 l-10 10" fill="none" stroke="{FG}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>')
-    style = (".s{animation:s 6s ease-in-out infinite;opacity:.18}.s1{animation-delay:2s}.s2{animation-delay:4s}@keyframes s{0%,34%,100%{opacity:.18}8%,26%{opacity:1}}"
-             ".fl{animation:fl 6s ease-in-out infinite;opacity:.25}.fl.s1{animation-delay:2s}.fl.s2{animation-delay:4s}@keyframes fl{0%,34%,100%{opacity:.25;transform:translateX(0)}8%,26%{opacity:1;transform:translateX(8px)}}")
-    save("hago.svg", W, H, " ".join(f"{t}. {d}" for _, t, d in T["hago"]), body, style)
-
-
-# ───────────── stack en cintas + trayectoria ─────────────
-# Iconos del stack: se sirven desde el CDN de Simple Icons, en un solo color. (nombre, slug)
-ICONOS = [[("TypeScript", "typescript"), ("JavaScript", "javascript"), ("PHP", "php"), ("React", "react"), ("Next.js", "nextdotjs"), ("Tailwind CSS", "tailwindcss"),
-           ("Ionic", "ionic"), ("Capacitor", "capacitor"), ("Node.js", "nodedotjs"), (".NET", "dotnet")],
-          [("PostgreSQL", "postgresql"), ("MySQL", "mysql"), ("MongoDB", "mongodb"), ("Supabase", "supabase"), ("Firebase", "firebase"), ("n8n", "n8n"),
-           ("Ollama", "ollama"), ("Docker", "docker"), ("Git", "git"), ("Unity", "unity")]]
-SIN_ICONO = ["C#", "Power BI", "Power Automate", "SAP", "VS Code"]
-
-
-def stack_titulo():
-    """Rótulo del stack, sin fondo: los iconos van debajo, sobre la página."""
-    W, H = W3, 46
-    body = (rotulo(4, 30, "STACK") + f'<line x1="118" x2="{W-4}" y1="25" y2="25" stroke="{LINEA}" stroke-width="1.5"/>'
-            f'<circle class="p" r="3.5" cy="25" fill="{FG}"><animate attributeName="cx" dur="6s" repeatCount="indefinite" values="118;{W-4}"/><animate attributeName="opacity" dur="6s" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;.1;.85;1"/></circle>')
-    save("stack-titulo.svg", W, H, "Stack", body)
-
-
+# ---------------- 4. trayectoria ----------------
 def ruta():
-    W, H = W1, 350
-    body = fondo(W, H) + rotulo(32, 50, T["ruta"]) + f'<line x1="44" x2="44" y1="104" y2="276" stroke="{LINEA}" stroke-width="2"/><line class="l" x1="44" x2="44" y1="104" y2="276" stroke="{ACENTO}" stroke-width="2.5"/>'
-    for i, (fecha, tit, org) in enumerate(T["hitos"]):
-        y, hoy = 108 + i * 82, i == 0
-        body += ((f'<circle class="ping" cx="44" cy="{y}" r="8" fill="none" stroke="{ACENTO}" stroke-width="2"/>' if hoy else "")
-                 + f'<circle cx="44" cy="{y}" r="8" fill="{ACENTO if hoy else BG}" stroke="{ACENTO if hoy else FG}" stroke-width="2.5"/>'
-                 f'<text x="70" y="{y+4}" font-family="{MONO}" font-size="11.5" font-weight="700" letter-spacing="2" fill="{GRIS}">{fecha}</text>'
-                 f'<text x="70" y="{y+28}" font-family="{SANS}" font-size="18.5" font-weight="800" fill="{FG}">{e(tit)}</text>'
-                 f'<text x="70" y="{y+50}" font-family="{SANS}" font-size="13.5" fill="{GRIS}">{e(org)}</text>')
-    style = (".l{stroke-dasharray:172;animation:l 6s ease-in-out infinite}@keyframes l{0%{stroke-dashoffset:172}50%,100%{stroke-dashoffset:0}}"
-             ".ping{animation:ping 2s ease-out infinite;transform-box:fill-box;transform-origin:center}@keyframes ping{to{transform:scale(2.6);opacity:0}}")
-    save("ruta.svg", W, H, f"{T['ruta'].title()}: " + "; ".join(f"{t}, {o} ({f})" for f, t, o in T["hitos"]), body, style)
+    H = 300; s = [base(H, 51, .5, "d")]
+    s.append(rot(48, 62, T["ruta"]))
+    et = [e + (i == 2,) for i, e in enumerate(T["et"])]
+    cw, gap = 340, 49; y = 96; ch = 164
+    for i, (f, a, b, d, hoy) in enumerate(et):
+        x = 48 + i * (cw + gap)
+        if i < 2:
+            xa = x + cw; s.append(f'<path d="M{xa} {y+ch/2}h{gap}" stroke="{TE}" stroke-width="2"/><path d="M{xa} {y+ch/2}h{gap}" stroke="{FG}" stroke-width="2" stroke-dasharray="5 9"><animate attributeName="stroke-dashoffset" values="28;0" dur="1s" repeatCount="indefinite"/></path><path d="M{xa+gap-9} {y+ch/2-6}l8 6-8 6" fill="none" stroke="{FG}" stroke-width="2"/>')
+        fg, sub, bg = (BG, SUBINV, FG) if hoy else (FG, GR, PAN)
+        s.append(f'<rect x="{x}" y="{y}" width="{cw}" height="{ch}" rx="16" fill="{bg}" stroke="{"none" if hoy else "{BORDE}"}" stroke-width="1.5"/>')
+        s.append(f'<text x="{x+22}" y="{y+34}" font-family="{MONO}" font-size="12" fill="{sub}" letter-spacing="2.5">{f}</text>'
+                 f'<text x="{x+cw-22}" y="{y+36}" text-anchor="end" font-family="{DISP}" font-weight="900" font-size="22" fill="{fg}" opacity="{.9 if hoy else .25}">0{i+1}</text>'
+                 f'<text x="{x+22}" y="{y+72}" font-family="{SANS}" font-weight="800" font-size="20" fill="{fg}">{a}</text><text x="{x+22}" y="{y+95}" font-family="{SANS}" font-size="13.5" fill="{sub}">{b}</text>'
+                 f'<text font-family="{SANS}" font-size="13.5" fill="{sub}"><tspan x="{x+22}" y="{y+126}">{d[0]}</tspan><tspan x="{x+22}" y="{y+145}">{d[1]}</tspan></text>')
+        if hoy: s.append(f'<circle cx="{x+cw-30}" cy="{y+ch-28}" r="5" fill="{BG}"/><circle cx="{x+cw-30}" cy="{y+ch-28}" r="5" fill="none" stroke="{BG}" stroke-width="1.5"><animate attributeName="r" values="5;15" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="1.8s" repeatCount="indefinite"/></circle>')
+    s.append(fin(H)); guardar("ruta.svg", "".join(s))
 
-
-# ───────────── actividad: semanas, ciudad, mapa, reloj ─────────────
-def semanas(data):
-    fin = dt.date.fromisoformat(data["hasta"])
-    d, weeks = fin - dt.timedelta(days=(fin.weekday() + 1) % 7 + 52 * 7), []
-    while d <= fin:
-        w = []
-        for _ in range(7):
-            if d <= fin:
-                w.append((d, data["dias"].get(d.isoformat(), 0)))
-            d += dt.timedelta(days=1)
-        weeks.append(w)
-    return weeks
-
-
-def galaxia(data):
-    """Una galaxia espiral hecha con los commits: el tiempo avanza del centro hacia el borde por dos brazos."""
-    import random
-    W, H = W2, 350
-    fin = dt.date.fromisoformat(data["hasta"])
-    cuenta = [data["dias"].get((fin - dt.timedelta(days=364 - k)).isoformat(), 0) for k in range(365)]
-    r = random.Random(42)
-    polvo, soles = "", ""
-    for k, c in enumerate(cuenta):
-        s = k / 364
-        ang = (k % 2) * math.pi + s * 2.35 * 2 * math.pi + r.uniform(-.09, .09)
-        rad = 30 + s * 262 + r.uniform(-8, 8)
-        x, y = rad * math.cos(ang), rad * math.sin(ang)
-        if c:
-            rr = min(12, 3.4 + 1.4 * math.sqrt(c))
-            soles += (f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{rr*3:.1f}" fill="url(#halo)"/>'
-                      f'<circle class="tw" style="animation-delay:{r.uniform(0, 3):.1f}s" cx="{x:.1f}" cy="{y:.1f}" r="{rr:.1f}" fill="{FG}"/>')
-        else:
-            polvo += f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r.choice([1.1, 1.4, 1.8])}" fill="{FG}" fill-opacity="{r.uniform(.2, .55):.2f}"/>'
-    for _ in range(800):
-        s = r.random() ** .8; ang = r.choice([0, math.pi]) + s * 2.35 * 2 * math.pi + r.gauss(0, .22); rad = 24 + s * 272 + r.gauss(0, 11)
-        polvo += f'<circle cx="{rad*math.cos(ang):.1f}" cy="{rad*math.sin(ang):.1f}" r="{r.choice([.5, .7, .9])}" fill="{FG}" fill-opacity="{r.uniform(.06, .26):.2f}"/>'
-    defs = (f'<radialGradient id="halo"><stop offset="0" stop-color="{FG}" stop-opacity=".5"/><stop offset=".4" stop-color="{FG}" stop-opacity=".12"/><stop offset="1" stop-color="{FG}" stop-opacity="0"/></radialGradient>'
-            '<filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>')
-    body = (f'{fondo(W, H)}<g clip-path="url(#clip)">'
-            f'<g transform="translate(476 170) rotate(-14) scale(1.08 .52)"><circle r="320" fill="url(#halo)" opacity=".3"/><g class="gal">{polvo}{soles}</g>'
-            f'<circle r="84" fill="url(#halo)"/><circle r="20" fill="{FG}" filter="url(#blur)"/><circle r="10" fill="{FG}"/></g></g>'
-            f'{rotulo(36, 50, T["gal"])}<text x="36" y="{H-30}" font-family="{SANS}" font-size="13.5" fill="{GRIS}">{e(T["gal_n"])}</text>')
-    save("galaxia.svg", W, H, f"{T['gal'].title()}: {T['gal_n']}", body,
-         ".gal{animation:gal 150s linear infinite}@keyframes gal{to{transform:rotate(360deg)}}.tw{animation:tw 3.2s ease-in-out infinite}@keyframes tw{50%{opacity:.25}}", defs)
-
-
-# ───────────── lenguajes + semana ─────────────
-# ───────────── hoja de vida + cierre ─────────────
-def cv():
-    W, H = W1, 200
-    body = f'''{fondo(W, H, "inverso")}{rotulo(28, 44, T["cv"], BG, MEDIO)}
-<text x="26" y="112" font-family="{DISPLAY}" font-size="40" font-weight="900" fill="{BG}" textLength="{ancho(T["cv1"], 40, .6)}" lengthAdjust="spacingAndGlyphs">{T["cv1"]}</text>
-<text x="26" y="158" font-family="{DISPLAY}" font-size="40" font-weight="900" fill="{MEDIO}" textLength="{ancho(T["cv2"], 40, .72)}" lengthAdjust="spacingAndGlyphs">{T["cv2"]}</text>
-<rect x="{W-112}" y="78" width="84" height="84" rx="10" fill="{BG}"/>
-<path class="dl" d="M{W-70} 100 v34 m-14 -13 l14 14 l14 -14" fill="none" stroke="{FG}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M{W-90} 148 h40" stroke="{FG}" stroke-width="5" stroke-linecap="round"/>'''
-    save("cv.svg", W, H, f"{T['cv'].title()}: {T['cv1']} {T['cv2']}", body, ".dl{animation:dl 1.5s ease-in-out infinite}@keyframes dl{50%{transform:translateY(6px)}}")
-
-
+# ---------------- 5. cierre con automatización ----------------
 def cierre():
-    W, H = W2, 200
-    c1, c2 = T["cierre"]
-    defs = '<pattern id="ray" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(-20)"><rect width="13" height="26" fill="#000" fill-opacity=".07"/></pattern>'
-    body = f'''{fondo(W, H, "medio")}<g clip-path="url(#clip)"><rect class="ray" x="-60" width="{W+120}" height="{H}" fill="url(#ray)"/></g>
-<text x="36" y="80" font-family="{DISPLAY}" font-size="42" font-weight="900" fill="{NEGRO}" textLength="{ancho(c1, 42, .73)}" lengthAdjust="spacingAndGlyphs">{e(c1)}</text>
-<text x="36" y="128" font-family="{DISPLAY}" font-size="42" font-weight="900" fill="{BLANCO}" textLength="{ancho(c2, 42, .73)}" lengthAdjust="spacingAndGlyphs">{e(c2)}</text>
-<text x="36" y="162" font-family="{SANS}" font-size="15" font-weight="600" fill="{NEGRO}">{e(T["cierre_s"])}</text>
-<rect x="{W-246}" y="68" width="210" height="64" rx="8" fill="{NEGRO}"/>
-<text x="{W-160}" y="108" text-anchor="middle" font-family="{SANS}" font-size="20" font-weight="800" fill="{BLANCO}">{e(T["escribe"])}</text>
-<path class="fl" d="M{W-92} 100 h24 m-9 -9 l9 9 l-9 9" fill="none" stroke="{BLANCO}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'''
-    save("cierre.svg", W, H, f"{c1} {c2} {T['escribe']}.", body,
-         ".ray{animation:ray 3s linear infinite}@keyframes ray{to{transform:translateX(26px)}}.fl{animation:fl 1.4s ease-in-out infinite}@keyframes fl{50%{transform:translateX(7px)}}", defs)
+    H = 360; s = [base(H, 67, .6, "e")]
+    s.append(rot(48, 62, T["paso"]))
+    s.append(f'<text font-family="{DISP}" font-weight="900" font-size="46" fill="{FG}"><tspan x="46" y="136">{T["c1"]}</tspan><tspan x="46" y="188">{T["c2"]}</tspan></text>')
+    s.append(f'<text font-family="{SANS}" font-size="17" fill="{GR}"><tspan x="48" y="232">{T["cs1"]}</tspan><tspan x="48" y="257">{T["cs2"]}</tspan></text>')
+    s.append(f'<text x="48" y="{H-40}" font-family="{MONO}" font-size="12" fill="{TE}" letter-spacing="2">{T["abajo"]}</text>')
+    # máquina: tareas entran, engranaje procesa, salen hechas
+    cy = 190; x0, xm, x1 = 610, 880, 1166
+    s.append(f'<path d="M{x0} {cy}H{x1}" stroke="{TE}" stroke-width="2"/><path d="M{x0} {cy}H{x1}" stroke="{FG}" stroke-width="2" stroke-dasharray="5 9" opacity=".7"><animate attributeName="stroke-dashoffset" values="28;0" dur="1s" repeatCount="indefinite"/></path>')
+    for i in range(3):   # documentos que entran
+        s.append(f'<g opacity="0"><animateTransform attributeName="transform" type="translate" values="{x0-10} 0;{xm-70} 0" dur="4.5s" begin="{-i*1.5}s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.15;.85;1" dur="4.5s" begin="{-i*1.5}s" repeatCount="indefinite"/>'
+                 f'<rect x="-17" y="{cy-23}" width="34" height="46" rx="5" fill="{PAN}" stroke="{FG}" stroke-width="1.8"/><path d="M-9 {cy-10}h18M-9 {cy-1}h18M-9 {cy+8}h11" stroke="{GR}" stroke-width="2"/></g>')
+    for i in range(3):   # hechos que salen
+        s.append(f'<g opacity="0"><animateTransform attributeName="transform" type="translate" values="{xm+70} 0;{x1-14} 0" dur="4.5s" begin="{-i*1.5-.7}s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.15;.85;1" dur="4.5s" begin="{-i*1.5-.7}s" repeatCount="indefinite"/>'
+                 f'<circle cx="0" cy="{cy}" r="19" fill="{FG}"/><path d="M-8 {cy}l6 6 11-12" stroke="{BG}" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>')
+    # núcleo
+    s.append(f'<circle cx="{xm}" cy="{cy}" r="86" fill="{BG}" stroke="{LI}" stroke-width="1.5"/><circle cx="{xm}" cy="{cy}" r="86" fill="none" stroke="{FG}" stroke-width="2" stroke-dasharray="60 480" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 {xm} {cy}" to="360 {xm} {cy}" dur="5s" repeatCount="indefinite"/></circle>')
+    def eng(cx, cyy, r, n, dur, sent):
+        p = []
+        for k in range(n * 2):
+            a0 = math.pi * k / n; a1 = math.pi * (k + 1) / n; rr = r if k % 2 == 0 else r * .78
+            p.append(f'{"M" if k == 0 else "L"}{cx+rr*math.cos(a0):.1f} {cyy+rr*math.sin(a0):.1f} L{cx+rr*math.cos(a1):.1f} {cyy+rr*math.sin(a1):.1f}')
+        return (f'<g><animateTransform attributeName="transform" type="rotate" from="0 {cx} {cyy}" to="{sent*360} {cx} {cyy}" dur="{dur}s" repeatCount="indefinite"/><path d="{" ".join(p)}Z" fill="{PAN}" stroke="{FG}" stroke-width="2" stroke-linejoin="round"/><circle cx="{cx}" cy="{cyy}" r="{r*.3:.1f}" fill="{BG}" stroke="{FG}" stroke-width="2"/></g>')
+    s.append(eng(xm - 20, cy + 8, 42, 10, 8, 1) + eng(xm + 38, cy - 28, 26, 8, 5, -1))
+    # tecnologías alrededor
+    for i, (slug, ang) in enumerate([("n8n", -150), ("ollama", -90), ("PA", -30), ("supabase", 30), ("react", 90), ("dotnet", 150)]):
+        a = math.radians(ang); x = xm + 132 * math.cos(a); y = cy + 132 * math.sin(a)
+        s.append(f'<g><animate attributeName="opacity" values=".45;1;.45" dur="3s" begin="{-i*.5}s" repeatCount="indefinite"/><circle cx="{x:.0f}" cy="{y:.0f}" r="22" fill="{BG}" stroke="{BORDE}" stroke-width="1.5"/>{icono(slug, x-11, y-11, 22)}</g>')
+    s.append(f'<text x="{x0+40}" y="{cy+66}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{GR}" letter-spacing="2">{T["tareas"]}</text><text x="{x1-40}" y="{cy+66}" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{GR}" letter-spacing="2">{T["hecho"]}</text>')
+    s.append(fin(H)); guardar("cierre.svg", "".join(s))
 
+def boton(fn, txt, lleno):
+    w = 44 + len(txt) * 10.4; h = 50
+    guardar(fn, f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w:.0f} {h}" width="{w:.0f}" height="{h}"><rect x="1" y="1" width="{w-2:.0f}" height="{h-2}" rx="12" fill="{FG if lleno else BG}" stroke="{FG}" stroke-width="1.5"/>'
+        f'<text x="{w/2:.0f}" y="31" text-anchor="middle" font-family="{MONO}" font-size="15.5" font-weight="700" fill="{BG if lleno else FG}">{txt}</text></svg>')
 
-def idioma_btn():
-    cod = T["otro"][0]
-    body = (f'<rect x="1" y="1" width="134" height="34" rx="6" fill="{BG}" stroke="{LINEA}" stroke-width="1.5"/>'
-            f'<rect x="14" y="12" width="11" height="11" fill="{ACENTO}"/><text x="36" y="23" font-family="{MONO}" font-size="13" font-weight="700" letter-spacing="2" fill="{TENUE}">'
-            f'{"ES" if cod == "EN" else "EN"} <tspan fill="{TENUE}">/</tspan> <tspan fill="{FG}">{cod} →</tspan></text>')
-    with open(os.path.join(OUT, "idioma.svg"), "w", encoding="utf-8") as f:
-        f.write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 136 36" width="136" height="36" role="img" aria-label="{e(T["otro"][2])}">{body}</svg>')
-
-
-# ───────────── README ─────────────
-def readme(idioma, alts):
-    T_ = TEXTOS[idioma]
-    def img(nombre, ancho_, alt, enlace=None, alto=None):
-        ext = "gif" if nombre == "consola" else "svg"
-        dim = f'height="{alto}"' if alto else f'width="{ancho_}"'
-        pic = (f'<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/{idioma}/{nombre}.{ext}">'
-               f'<img src="assets/oscuro/{idioma}/{nombre}.{ext}" {dim} alt="{e(alt)}"></picture>')
-        return f'<a href="{enlace}">{pic}</a>' if enlace else pic
-    def icono(nombre, slug):
-        return (f'<picture><source media="(prefers-color-scheme: light)" srcset="https://cdn.simpleicons.org/{slug}/0d0d0d">'
-                f'<img src="https://cdn.simpleicons.org/{slug}/f2f2f2" height="34" alt="{e(nombre)}" title="{e(nombre)}"></picture>')
-    BASE = {"sobre": W2, "consola": W1, "hago": W3, "galaxia": W2, "ruta": W1, "cifra-commits": W1, "cifra-dias": W1, "cifra-hora": W1, "cv": W1, "cierre": W2}
-    def fila(*xs):
-        return [img(x[0], ancho_pct(x[0], BASE[x[0]], len(xs)), alts[x[0]], x[1] if len(x) > 1 else None) for x in xs]
-    sep = "&nbsp;&nbsp;&nbsp;&nbsp;\n"
-    out = [f'<p align="right">{img("idioma", None, T_["otro"][2], T_["otro"][1], alto=30)}</p>', "",
-           f'<p><img src="assets/banner-{idioma}.gif" width="100%" alt="{e(T_["banner"])}"></p>', "", "<p>"]
-    out += fila(("sobre",), ("consola",)) + fila(("hago",)) + ["</p>", "",
-            img("stack-titulo", "100%", "Stack"), "",
-            '<p align="center">', sep.join(icono(*i) for i in ICONOS[0]), "<br><br>", sep.join(icono(*i) for i in ICONOS[1]),
-            "<br><br>", "<sub>" + " &nbsp;·&nbsp; ".join(SIN_ICONO) + "</sub>", "</p>", "", "<br>", "", "<p>"]
-    out += (fila(("galaxia",), ("ruta",)) + fila(("cifra-commits",), ("cifra-dias",), ("cifra-hora",))
-            + fila(("cv", CV), ("cierre", f"mailto:{CORREO}")) + ["</p>", ""])
-    with open(os.path.join(ROOT, T_["otro"][1] == "README.md" and "README.en.md" or "README.md"), "w", encoding="utf-8") as f:
-        f.write("\n".join(out))
-
-
-def alts_de(idioma):
-    """Lee el texto alternativo que cada bloque guardó en su aria-label."""
-    import re
-    d = os.path.join(ROOT, "assets", "oscuro", idioma)
-    alts = {n[:-4]: html.unescape(re.search(r'aria-label="([^"]*)"', open(os.path.join(d, n), encoding="utf-8").read()).group(1)) for n in os.listdir(d) if n.endswith(".svg")}
-    alts["consola"] = TEXTOS[idioma]["consola"]
-    return alts
-
+def readme(idioma):
+    T = TEXTOS[idioma]; A = T["alt"]
+    pic = lambda f, attr, alt: f'<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/{idioma}/{f}"><img src="assets/oscuro/{idioma}/{f}" {attr} alt="{esc(alt)}"></picture>'
+    L = [f'<p align="right"><a href="{T["otro"]}">{pic("b-idioma.svg", 'height="30"', A["idioma"])}</a></p>', "",
+         f'<p align="center"><img src="assets/banner-{idioma}.gif" width="100%" alt="{esc(A["banner"])}"></p>', ""]
+    for f in ("yo", "stack", "actividad", "ruta", "cierre"): L += [f'<p align="center">{pic(f + ".svg", 'width="100%"', A[f])}</p>', ""]
+    L += [f'<p align="center"><a href="https://github.com/LordVincenzo/LordVincenzo/raw/main/Briand_Castro_CV.pdf">{pic("b-cv.svg", 'height="44"', A["cv"])}</a>&nbsp;&nbsp;&nbsp;'
+          f'<a href="mailto:Briandcastro11b@gmail.com">{pic("b-mail.svg", 'height="44"', A["mail"])}</a></p>', ""]
+    open(os.path.join(ROOT, T["fn"]), "w", encoding="utf-8").write("\n".join(L))
 
 if __name__ == "__main__":
-    data = cargar("actividad.json")
     for tema in TEMAS:
-        for idi in TEXTOS:
-            usar(tema, idi)
-            sobre(); hago(); stack_titulo(); ruta(); galaxia(data); cv(); cierre(); idioma_btn()
-            dias = [x for w in semanas(data) for x in w]
-            total, activos = sum(c for _, c in dias), sum(1 for _, c in dias if c)
-            racha = cur = 0
-            for _, c in dias:
-                cur = cur + 1 if c else 0
-                racha = max(racha, cur)
-            cifra("cifra-commits.svg", "inverso", str(total), T["commits"][0], T["commits"][1].format(n=data["proyectos"]))
-            cifra("cifra-dias.svg", "base", str(activos), *T["dias"])
-            pico = data["horas"].index(max(data["horas"]))
-            cifra("cifra-hora.svg", "medio", hora12(pico), *T["hora"], tam=60)
-    for idi in TEXTOS:
-        readme(idi, alts_de(idi))
-    print("Listo")
+        for idioma in TEXTOS:
+            usar(tema, idioma); yo(); stack(); actividad(); ruta(); cierre()
+            boton("b-cv.svg", T["b_cv"], True); boton("b-mail.svg", T["b_mail"], False); boton("b-idioma.svg", T["b_idioma"], False)
+    for idioma in TEXTOS: readme(idioma)

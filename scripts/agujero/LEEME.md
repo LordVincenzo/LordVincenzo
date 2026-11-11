@@ -12,3 +12,10 @@ python banner.py 60 83                            # fotogramas, milisegundos por
 ```
 
 Deja `banner-es.gif` y `banner-en.gif`; se copian a `assets/`.
+
+## Banner v2 (agujero más grande + lluvia de código)
+
+```
+python trazar.py 1100 420 0.71 0.5 0.36 mapa2.npz
+python banner2.py 60 83 ../../assets/banner
+```
