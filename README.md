@@ -1,6 +1,6 @@
 <p align="right"><a href="README.en.md"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/b-idioma.svg?v=d7df5502"><img src="assets/oscuro/es/b-idioma.svg?v=70d8f56d" height="30" alt="Read in English"></picture></a></p>
 
-<p align="center"><img src="assets/portada-es.gif?v=e118ddb0" width="100%" alt="Briand Castro, analista y desarrollador de software. Animación de un agujero negro rodeado de lluvia de código."></p>
+<p align="center"><img src="assets/portada-es.gif?v=3d42b1c8" width="100%" alt="Briand Castro, analista y desarrollador de software. Animación de un agujero negro rodeado de lluvia de código."></p>
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/es/yo.svg?v=2ea09bcd"><img src="assets/oscuro/es/yo.svg?v=0d1a1cd5" width="100%" alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo apps web y móviles y automatizo el trabajo repetitivo. Hoy gestiono la plataforma Prizma en la Corporación Universitaria Americana creo asistentes de IA personalizados (clonación de voz, reconocimiento con Whisper, modelo en servidor) y manejo lógica, datos y automatizaciones internas. Soledad, Colombia."></picture></p>
 

@@ -1,6 +1,6 @@
 <p align="right"><a href="README.md"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/b-idioma.svg?v=794d78ed"><img src="assets/oscuro/en/b-idioma.svg?v=5cafa855" height="30" alt="Leer en español"></picture></a></p>
 
-<p align="center"><img src="assets/portada-en.gif?v=8b042da6" width="100%" alt="Briand Castro, software analyst and developer. Animation of a black hole surrounded by falling code."></p>
+<p align="center"><img src="assets/portada-en.gif?v=e7fe66c4" width="100%" alt="Briand Castro, software analyst and developer. Animation of a black hole surrounded by falling code."></p>
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/yo.svg?v=97f70f05"><img src="assets/oscuro/en/yo.svg?v=0940699c" width="100%" alt="About me: technologist in Software Analysis and Development. I build web and mobile apps and automate repetitive work. Today I manage the Prizma platform at Corporación Universitaria Americana build custom AI assistants (voice cloning, Whisper speech recognition, model on a server) and handle logic, data and internal automations. Soledad, Colombia."></picture></p>
 
