@@ -39,7 +39,7 @@ TEXTOS = {
                    [("Universitaria Americana, donde automaticé el cargue de cursos con ", 0), ("n8n", 1), (".", 0)], None,
                    [("Me interesan la ", 0), ("IA que corre en local", 1), (", las ", 0), ("apps en tiempo real", 1)], [("y los ", 0), ("flujos de automatización", 1), (".", 0)]],
         sobre_alt="Sobre mí: tecnólogo en Análisis y Desarrollo de Software. Construyo aplicaciones web y móviles de punta a punta y automatizo procesos. Gestiono la plataforma educativa Prizma en la Corporación Universitaria Americana, donde automaticé el cargue de cursos con n8n. Me interesan la IA que corre en local, las apps en tiempo real y los flujos de automatización.",
-        commits=("COMMITS", "en {n} proyectos, último año"), dias=("DÍAS ACTIVOS", "con al menos un commit"), racha=("MEJOR RACHA", "días seguidos"),
+        commits=("COMMITS", "en {n} proyectos, último año"), dias=("DÍAS ACTIVOS", "con al menos un commit"), racha=("MEJOR RACHA", "días seguidos"), hora=("HORA PICO", "cuando más programo"),
         hago=[("DESARROLLO", "Web y móvil de punta a punta", "Interfaces, APIs y bases de datos: de la idea a la app funcionando."),
               ("AUTOMATIZACIÓN", "Que lo repetitivo lo haga el sistema", "Flujos con n8n y Power Automate que ahorran horas de trabajo manual."),
               ("DATOS", "Datos que se entienden", "Reportes y tableros en Power BI sobre bases SQL y NoSQL.")],
@@ -66,7 +66,7 @@ TEXTOS = {
                    [("Universitaria Americana, where I automated course loading with ", 0), ("n8n", 1), (".", 0)], None,
                    [("I'm into ", 0), ("AI that runs locally", 1), (", ", 0), ("real-time apps", 1)], [("and ", 0), ("automation workflows", 1), (".", 0)]],
         sobre_alt="About me: technologist in Software Analysis and Development. I build web and mobile apps end to end and automate processes. I manage the Prizma learning platform at Corporación Universitaria Americana, where I automated course loading with n8n. I'm into AI that runs locally, real-time apps and automation workflows.",
-        commits=("COMMITS", "in {n} projects, past year"), dias=("ACTIVE DAYS", "with at least one commit"), racha=("BEST STREAK", "days in a row"),
+        commits=("COMMITS", "in {n} projects, past year"), dias=("ACTIVE DAYS", "with at least one commit"), racha=("BEST STREAK", "days in a row"), hora=("PEAK HOUR", "when I code the most"),
         hago=[("DEVELOPMENT", "Web and mobile, end to end", "Interfaces, APIs and databases: from the idea to a working app."),
               ("AUTOMATION", "Let the system do the repetitive", "n8n and Power Automate workflows that save hours of manual work."),
               ("DATA", "Data people understand", "Power BI reports and dashboards on SQL and NoSQL databases.")],
@@ -153,14 +153,14 @@ def sobre():
 
 
 # ───────────── cifras ─────────────
-def cifra(fn, tono, valor, etiqueta, nota):
+def cifra(fn, tono, valor, etiqueta, nota, tam=104):
     W, H = W1, 220
     tinta, sec, punto, num = {"inverso": (BG, TENUE if TEMA == "oscuro" else "#bdbdbd", MEDIO, BG), "base": (FG, GRIS, ACENTO, FG),
                               "medio": (BLANCO, NEGRO, NEGRO, BLANCO)}[tono]
     if tono == "inverso" and TEMA == "oscuro":
         sec = "#555555"
     body = (f'{fondo(W, H, tono)}{rotulo(28, 44, etiqueta, tinta, punto)}'
-            f'<text class="v" x="24" y="156" font-family="{DISPLAY}" font-size="104" font-weight="900" fill="{num}" textLength="{60*len(valor)+20}" lengthAdjust="spacingAndGlyphs">{e(valor)}</text>'
+            f'<text class="v" x="24" y="156" font-family="{DISPLAY}" font-size="{tam}" font-weight="900" fill="{num}" textLength="{round(tam*.58*len(valor))+20}" lengthAdjust="spacingAndGlyphs">{e(valor)}</text>'
             f'<text x="28" y="192" font-family="{SANS}" font-size="15" font-weight="600" fill="{sec}">{e(nota)}</text>')
     save(fn, W, H, f"{etiqueta}: {valor}. {nota}", body, ".v{animation:v 5s ease-in-out infinite}@keyframes v{50%{opacity:.82}}")
 
@@ -176,7 +176,7 @@ def hago():
                  f'<text x="40" y="{y+68}" font-family="{DISPLAY}" font-size="56" font-weight="900" fill="none" stroke="{TENUE}" stroke-width="1.6" textLength="84" lengthAdjust="spacingAndGlyphs">0{i+1}</text>'
                  f'<text x="160" y="{y+42}" font-family="{MONO}" font-size="12.5" font-weight="700" letter-spacing="3" fill="{ACENTO}">{tag}</text>'
                  f'<text x="160" y="{y+74}" font-family="{SANS}" font-size="25" font-weight="800" fill="{FG}">{e(tit)}</text>'
-                 f'<text x="646" y="{y+58}" font-family="{SANS}" font-size="14.5" fill="{GRIS}">{e(desc)}</text>'
+                 f'<text x="626" y="{y+58}" font-family="{SANS}" font-size="14" fill="{GRIS}">{e(desc)}</text>'
                  f'<path class="fl s{i}" d="M{W-76} {y+52} h26 m-10 -10 l10 10 l-10 10" fill="none" stroke="{FG}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>')
     style = (".s{animation:s 6s ease-in-out infinite;opacity:.18}.s1{animation-delay:2s}.s2{animation-delay:4s}@keyframes s{0%,34%,100%{opacity:.18}8%,26%{opacity:1}}"
              ".fl{animation:fl 6s ease-in-out infinite;opacity:.25}.fl.s1{animation-delay:2s}.fl.s2{animation-delay:4s}@keyframes fl{0%,34%,100%{opacity:.25;transform:translateX(0)}8%,26%{opacity:1;transform:translateX(8px)}}")
@@ -184,42 +184,33 @@ def hago():
 
 
 # ───────────── stack en cintas + trayectoria ─────────────
-STACK = [(["TypeScript", "JavaScript", "C#", "PHP", "SQL"], True), (["React", "Next.js", "Tailwind CSS", "Ionic", "Capacitor"], False),
-         (["Node.js", ".NET 8", "PostgreSQL", "MySQL", "MongoDB", "Supabase", "Firebase"], False),
-         (["n8n", "Power Automate", "Power BI", "Ollama", "Whisper"], True), (["Git", "Docker", "Unity", "VS Code", "SAP"], False)]
+# Iconos del stack: se sirven desde el CDN de Simple Icons, en un solo color. (nombre, slug)
+ICONOS = [[("TypeScript", "typescript"), ("JavaScript", "javascript"), ("PHP", "php"), ("React", "react"), ("Next.js", "nextdotjs"), ("Tailwind CSS", "tailwindcss"),
+           ("Ionic", "ionic"), ("Capacitor", "capacitor"), ("Node.js", "nodedotjs"), (".NET", "dotnet")],
+          [("PostgreSQL", "postgresql"), ("MySQL", "mysql"), ("MongoDB", "mongodb"), ("Supabase", "supabase"), ("Firebase", "firebase"), ("n8n", "n8n"),
+           ("Ollama", "ollama"), ("Docker", "docker"), ("Git", "git"), ("Unity", "unity")]]
+SIN_ICONO = ["C#", "Power BI", "Power Automate", "SAP", "VS Code"]
 
 
-def stack():
-    W, H = W2, 420
-    body, style = fondo(W, H) + rotulo(36, 50, "STACK"), ""
-    for i, ((items, lleno), lab) in enumerate(zip(STACK, T["stack"])):
-        y = 78 + i * 66
-        unidad, x = "", 0
-        for t in items:
-            w = int(len(t) * 10.2) + 34
-            unidad += (f'<rect x="{x}" y="0" width="{w}" height="38" rx="6" fill="{ACENTO if lleno else "none"}" stroke="{ACENTO if lleno else TENUE}" stroke-width="1.4"/>'
-                       f'<text x="{x+w/2}" y="25" text-anchor="middle" font-family="{MONO}" font-size="16" font-weight="700" fill="{BG if lleno else FG}" textLength="{w-34}" lengthAdjust="spacingAndGlyphs">{e(t)}</text>')
-            x += w + 12
-        reps = int(-(-(W + x) // x) + 1)
-        cinta = "".join(f'<g transform="translate({k*x},0)">{unidad}</g>' for k in range(reps))
-        style += f".c{i}{{animation:c{i} {x/28:.1f}s linear infinite {'normal' if i % 2 == 0 else 'reverse'}}}@keyframes c{i}{{to{{transform:translateX(-{x}px)}}}}"
-        body += (f'<text x="36" y="{y+8}" font-family="{MONO}" font-size="11" letter-spacing="2.4" fill="{TENUE}">{e(lab)}</text>'
-                 f'<g clip-path="url(#clip)"><g transform="translate(0,{y+16})"><g class="c{i}">{cinta}</g></g></g>')
-    body += f'<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="15" fill="none" stroke="{LINEA}" stroke-width="1.5"/>'
-    save("stack.svg", W, H, "Stack: " + "; ".join(f"{l}: {', '.join(it)}" for (it, _), l in zip(STACK, T["stack"])), body, style)
+def stack_titulo():
+    """Rótulo del stack, sin fondo: los iconos van debajo, sobre la página."""
+    W, H = W3, 46
+    body = (rotulo(4, 30, "STACK") + f'<line x1="118" x2="{W-4}" y1="25" y2="25" stroke="{LINEA}" stroke-width="1.5"/>'
+            f'<circle class="p" r="3.5" cy="25" fill="{FG}"><animate attributeName="cx" dur="6s" repeatCount="indefinite" values="118;{W-4}"/><animate attributeName="opacity" dur="6s" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;.1;.85;1"/></circle>')
+    save("stack-titulo.svg", W, H, "Stack", body)
 
 
 def ruta():
-    W, H = W1, 420
-    body = fondo(W, H) + rotulo(32, 50, T["ruta"]) + f'<line x1="44" x2="44" y1="96" y2="372" stroke="{LINEA}" stroke-width="2"/><line class="l" x1="44" x2="44" y1="96" y2="372" stroke="{ACENTO}" stroke-width="2.5"/>'
+    W, H = W1, 300
+    body = fondo(W, H) + rotulo(32, 50, T["ruta"]) + f'<line x1="44" x2="44" y1="90" y2="230" stroke="{LINEA}" stroke-width="2"/><line class="l" x1="44" x2="44" y1="90" y2="230" stroke="{ACENTO}" stroke-width="2.5"/>'
     for i, (fecha, tit, org) in enumerate(T["hitos"]):
-        y, hoy = 104 + i * 104, i == 0
-        body += ((f'<circle class="ping" cx="44" cy="{y}" r="9" fill="none" stroke="{ACENTO}" stroke-width="2"/>' if hoy else "")
-                 + f'<circle cx="44" cy="{y}" r="9" fill="{ACENTO if hoy else BG}" stroke="{ACENTO if hoy else FG}" stroke-width="2.5"/>'
-                 f'<text x="72" y="{y+4}" font-family="{MONO}" font-size="12" font-weight="700" letter-spacing="2" fill="{ACENTO}">{fecha}</text>'
-                 f'<text x="72" y="{y+32}" font-family="{SANS}" font-size="19" font-weight="800" fill="{FG}">{e(tit)}</text>'
-                 f'<text x="72" y="{y+54}" font-family="{SANS}" font-size="14" fill="{GRIS}">{e(org)}</text>')
-    style = (".l{stroke-dasharray:276;animation:l 6s ease-in-out infinite}@keyframes l{0%{stroke-dashoffset:276}50%,100%{stroke-dashoffset:0}}"
+        y, hoy = 94 + i * 66, i == 0
+        body += ((f'<circle class="ping" cx="44" cy="{y}" r="8" fill="none" stroke="{ACENTO}" stroke-width="2"/>' if hoy else "")
+                 + f'<circle cx="44" cy="{y}" r="8" fill="{ACENTO if hoy else BG}" stroke="{ACENTO if hoy else FG}" stroke-width="2.5"/>'
+                 f'<text x="70" y="{y+4}" font-family="{MONO}" font-size="11.5" font-weight="700" letter-spacing="2" fill="{GRIS}">{fecha}</text>'
+                 f'<text x="70" y="{y+28}" font-family="{SANS}" font-size="18" font-weight="800" fill="{FG}">{e(tit)}</text>'
+                 f'<text x="70" y="{y+47}" font-family="{SANS}" font-size="13" fill="{GRIS}">{e(org)}</text>')
+    style = (".l{stroke-dasharray:160;animation:l 6s ease-in-out infinite}@keyframes l{0%{stroke-dashoffset:160}50%,100%{stroke-dashoffset:0}}"
              ".ping{animation:ping 2s ease-out infinite;transform-box:fill-box;transform-origin:center}@keyframes ping{to{transform:scale(2.6);opacity:0}}")
     save("ruta.svg", W, H, f"{T['ruta'].title()}: " + "; ".join(f"{t}, {o} ({f})" for f, t, o in T["hitos"]), body, style)
 
@@ -271,61 +262,7 @@ def galaxia(data):
          ".gal{animation:gal 150s linear infinite}@keyframes gal{to{transform:rotate(360deg)}}.tw{animation:tw 3.2s ease-in-out infinite}@keyframes tw{50%{opacity:.25}}", defs)
 
 
-def reloj(data):
-    W, H = W1, 300
-    horas = data["horas"]
-    pico, mx = horas.index(max(horas)), max(horas + [1])
-    cx, cy, r0 = 200, 176, 50
-    rayos = ""
-    for h, v in enumerate(horas):
-        ang = math.radians(h * 15 - 90)
-        r1 = r0 + 8 + 48 * v / mx
-        rayos += (f'<line class="y" style="animation-delay:{h*.12:.2f}s" x1="{cx+r0*math.cos(ang):.1f}" y1="{cy+r0*math.sin(ang):.1f}" x2="{cx+r1*math.cos(ang):.1f}" y2="{cy+r1*math.sin(ang):.1f}" '
-                  f'stroke="{ACENTO if h == pico else FG}" stroke-opacity="{1 if h == pico else .4}" stroke-width="{9 if h == pico else 7}" stroke-linecap="round"/>')
-    marcas = "".join(f'<text x="{cx + 138*math.cos(math.radians(h*15-90)):.0f}" y="{cy + 114*math.sin(math.radians(h*15-90)) + 4:.0f}" text-anchor="middle" font-family="{MONO}" font-size="10.5" fill="{TENUE}">{hora12(h)}</text>' for h in (0, 6, 12, 18))
-    body = (f'{fondo(W, H)}{rotulo(28, 44, T["reloj"])}{rayos}{marcas}'
-            f'<g class="g"><line x1="{cx}" y1="{cy}" x2="{cx}" y2="{cy-r0+10}" stroke="{ACENTO}" stroke-width="2" stroke-linecap="round"/></g><circle cx="{cx}" cy="{cy}" r="4" fill="{ACENTO}"/>'
-            f'<text x="{cx}" y="{cy+30}" text-anchor="middle" font-family="{SANS}" font-size="17" font-weight="800" fill="{FG}">{hora12(pico)}</text>')
-    style = (".y{animation:y 2.9s ease-in-out infinite}@keyframes y{50%{stroke-opacity:.15}}"
-             f".g{{animation:g 24s linear infinite;transform-origin:{cx}px {cy}px}}@keyframes g{{to{{transform:rotate(360deg)}}}}")
-    save("reloj.svg", W, H, f"{T['reloj'].title()}: {hora12(pico)}.", body, style)
-
-
 # ───────────── lenguajes + semana ─────────────
-def lenguajes(data):
-    W, H = W2, 200
-    langs = [(T["otros"] if n == "Otros" else n, p) for n, p in cargar("lenguajes.json")["lenguajes"]]
-    cols = ESCALA
-    x0, bw = 36, W - 72
-    body = fondo(W, H) + rotulo(36, 50, T["leng"].format(n=data["proyectos"])) + f'<clipPath id="lb"><rect x="{x0}" y="72" width="{bw}" height="22" rx="5"/></clipPath><g clip-path="url(#lb)">'
-    cx = x0
-    for i, ((n, p), c) in enumerate(zip(langs, cols)):
-        w = bw * p / 100
-        body += f'<rect class="q" style="animation-delay:{i*.3:.1f}s" x="{cx:.1f}" y="72" width="{w+.6:.1f}" height="22" fill="{c}"/>'
-        cx += w
-    body += "</g>"
-    for i, ((n, p), c) in enumerate(zip(langs, cols)):
-        x, y = x0 + (i % 4) * bw / 4, 130 + (i // 4) * 32
-        body += (f'<rect x="{x:.1f}" y="{y-10}" width="10" height="10" fill="{c}"/><text x="{x+18:.1f}" y="{y}" font-family="{SANS}" font-size="15" font-weight="700" fill="{FG}">{e(n)}'
-                 f'<tspan dx="8" font-family="{MONO}" font-size="13" font-weight="400" fill="{GRIS}">{p:.0f}%</tspan></text>')
-    save("lenguajes.svg", W, H, T["leng"].format(n=data["proyectos"]).title() + ": " + ", ".join(f"{n} {p:.0f}%" for n, p in langs), body,
-         ".q{animation:q 4.2s ease-in-out infinite}@keyframes q{50%{opacity:.6}}")
-
-
-def semana(data):
-    W, H = W1, 200
-    sem = data["semana"]
-    mx, top = max(sem + [1]), sorted(range(7), key=lambda i: -sem[i])[:2]
-    finde = T["finde"].format(p=round(100 * (sem[5] + sem[6]) / max(1, sum(sem))))
-    body = fondo(W, H) + rotulo(28, 44, T["semana"]) + f'<text x="{W-28}" y="44" text-anchor="end" font-family="{SANS}" font-size="12.5" fill="{GRIS}">{finde}</text>'
-    for i, v in enumerate(sem):
-        x, bh = 30 + i * 50, max(4, 78 * v / mx)
-        body += (f'<rect class="u" style="animation-delay:{i*.16:.2f}s" x="{x}" y="{150-bh:.1f}" width="34" height="{bh:.1f}" rx="5" fill="{ACENTO if i in top else FG}" fill-opacity="{1 if i in top else .32}"/>'
-                 f'<text x="{x+17}" y="174" text-anchor="middle" font-family="{MONO}" font-size="12.5" font-weight="700" fill="{FG if i in top else TENUE}">{T["letras"][i]}</text>')
-    save("semana.svg", W, H, f"{T['semana'].title()}: {finde}.", body,
-         ".u{animation:u 3.4s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom}@keyframes u{50%{transform:scaleY(.8)}}")
-
-
 # ───────────── hoja de vida + cierre ─────────────
 def cv():
     W, H = W1, 200
@@ -371,13 +308,19 @@ def readme(idioma, alts):
         pic = (f'<picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/{idioma}/{nombre}.{ext}">'
                f'<img src="assets/oscuro/{idioma}/{nombre}.{ext}" {dim} alt="{e(alt)}"></picture>')
         return f'<a href="{enlace}">{pic}</a>' if enlace else pic
-    filas = [("consola", "32.9%"), ("sobre", "66.4%"), ("cifra-commits", "32.9%"), ("cifra-dias", "32.9%"), ("cifra-racha", "32.9%"),
-             ("hago", "100%"), ("stack", "66.4%"), ("ruta", "32.9%"), ("galaxia", "66.4%"), ("reloj", "32.9%"), ("lenguajes", "66.4%"), ("semana", "32.9%"),
-             ("cv", "32.9%", CV), ("cierre", "66.4%", f"mailto:{CORREO}")]
+    def icono(nombre, slug):
+        return (f'<picture><source media="(prefers-color-scheme: light)" srcset="https://cdn.simpleicons.org/{slug}/0d0d0d">'
+                f'<img src="https://cdn.simpleicons.org/{slug}/f2f2f2" height="34" alt="{e(nombre)}" title="{e(nombre)}"></picture>')
+    fila = lambda *xs: [img(x[0], x[1], alts[x[0]], x[2] if len(x) > 2 else None) for x in xs]
+    sep = "&nbsp;&nbsp;&nbsp;&nbsp;\n"
     out = [f'<p align="right">{img("idioma", None, T_["otro"][2], T_["otro"][1], alto=30)}</p>', "",
            "<p>", f'<img src="assets/banner-{idioma}.gif" width="100%" alt="{e(T_["banner"])}">']
-    out += [img(f[0], f[1], alts[f[0]], f[2] if len(f) > 2 else None) for f in filas]
-    out += ["</p>", ""]
+    out += fila(("sobre", "66.4%"), ("consola", "32.9%"), ("hago", "100%")) + ["</p>", "",
+            img("stack-titulo", "100%", "Stack"), "",
+            '<p align="center">', sep.join(icono(*i) for i in ICONOS[0]), "<br><br>", sep.join(icono(*i) for i in ICONOS[1]),
+            "<br><br>", "<sub>" + " &nbsp;·&nbsp; ".join(SIN_ICONO) + "</sub>", "</p>", "", "<p>"]
+    out += fila(("galaxia", "66.4%"), ("ruta", "32.9%"), ("cifra-commits", "32.9%"), ("cifra-dias", "32.9%"), ("cifra-hora", "32.9%"),
+                ("cv", "32.9%", CV), ("cierre", "66.4%", f"mailto:{CORREO}")) + ["</p>", ""]
     with open(os.path.join(ROOT, T_["otro"][1] == "README.md" and "README.en.md" or "README.md"), "w", encoding="utf-8") as f:
         f.write("\n".join(out))
 
@@ -396,7 +339,7 @@ if __name__ == "__main__":
     for tema in TEMAS:
         for idi in TEXTOS:
             usar(tema, idi)
-            sobre(); hago(); stack(); ruta(); galaxia(data); reloj(data); lenguajes(data); semana(data); cv(); cierre(); idioma_btn()
+            sobre(); hago(); stack_titulo(); ruta(); galaxia(data); cv(); cierre(); idioma_btn()
             dias = [x for w in semanas(data) for x in w]
             total, activos = sum(c for _, c in dias), sum(1 for _, c in dias if c)
             racha = cur = 0
@@ -405,7 +348,8 @@ if __name__ == "__main__":
                 racha = max(racha, cur)
             cifra("cifra-commits.svg", "inverso", str(total), T["commits"][0], T["commits"][1].format(n=data["proyectos"]))
             cifra("cifra-dias.svg", "base", str(activos), *T["dias"])
-            cifra("cifra-racha.svg", "medio", str(racha), *T["racha"])
+            pico = data["horas"].index(max(data["horas"]))
+            cifra("cifra-hora.svg", "medio", hora12(pico), *T["hora"], tam=60)
     for idi in TEXTOS:
         readme(idi, alts_de(idi))
     print("Listo")
