@@ -2,13 +2,13 @@
 
 <p align="center"><img src="assets/portada-en.gif?v=e7fe66c4" width="100%" alt="Briand Castro, software analyst and developer. Animation of a black hole surrounded by falling code."></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/yo.svg?v=97f70f05"><img src="assets/oscuro/en/yo.svg?v=0940699c" width="100%" alt="About me: technologist in Software Analysis and Development. I build web and mobile apps and automate repetitive work. Today I manage the Prizma platform at Corporación Universitaria Americana build custom AI assistants (voice cloning, Whisper speech recognition, model on a server) and handle logic, data and internal automations. Soledad, Colombia."></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/yo.svg?v=49b1ef69"><img src="assets/oscuro/en/yo.svg?v=a5f2df69" width="100%" alt="About me: technologist in Software Analysis and Development. I build web and mobile apps and automate repetitive work. Today I build internal tools, custom AI assistants (voice cloning, Whisper speech recognition, model on a server) and handle logic, data and internal automations. Soledad, Colombia."></picture></p>
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/stack.svg?v=e1c3a484"><img src="assets/oscuro/en/stack.svg?v=e3aa0d4c" width="100%" alt="Stack: C#, TypeScript, JavaScript, PHP, Python, SQL; React, Next.js, Tailwind, Ionic, Capacitor; .NET, Node.js, PostgreSQL, MySQL, MongoDB, Supabase, Firebase, Power BI; n8n, Power Automate, Ollama; Git, Docker, Unity, VS Code, SAP."></picture></p>
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/actividad.svg?v=748c15a1"><img src="assets/oscuro/en/actividad.svg?v=053236ff" width="100%" alt="Activity over the last year: 165 commits across 5 projects, 27 active days, best streak of 4 days, 51% on weekends, peak hour 10 a.m."></picture></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/trayectoria.svg?v=9f2fb850"><img src="assets/oscuro/en/trayectoria.svg?v=c8ed0329" width="100%" alt="Career: Software Technologist at SENA (2023-2025), Supplier Quality at Procaps (January to July 2025), Prizma Platform Manager at Corporación Universitaria Americana (September 2025 to now)."></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/trayectoria.svg?v=ce22accb"><img src="assets/oscuro/en/trayectoria.svg?v=935d6e17" width="100%" alt="Career: Software Technologist at SENA (2023-2025), Supplier Quality at Procaps (January to July 2025), Platform Manager at a higher education institution (September 2025 to now)."></picture></p>
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="assets/claro/en/contacto.svg?v=26f0524a"><img src="assets/oscuro/en/contacto.svg?v=dfe0e4a6" width="100%" alt="Shall we automate something? Tell me which repetitive task eats your time."></picture></p>
 
